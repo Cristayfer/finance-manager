@@ -19,8 +19,21 @@ def mostrar_menu():
     print("3 - Ver saldo")
     print("4 - Editar movimentação")
     print("5 - Excluir movimentação")
-    print("6 - Sair")
+    print("6 - Resumo financeiro")
+    print("7 - Sair")
 
+
+def ler_valor():
+    while True:
+        try:
+            valor = input("Digite o valor: ")
+            valor = valor.replace(",", ".")
+            return float(valor)
+        except ValueError:
+            print("Valor inválido. Digite um número válido.")
+
+def formatar_valor(valor):
+    return f"R$ {valor:.2f}".replace(".", ",")
 
 def cadastrar_movimentacao():
     while True:
@@ -33,11 +46,7 @@ def cadastrar_movimentacao():
 
     descricao = input("Digite a descrição: ")
 
-    try:
-        valor = float(input("Digite o valor: "))
-    except ValueError:
-        print("Valor inválido!")
-        return
+    valor = ler_valor()
 
     inserir_movimentacao(tipo, descricao, valor)
 
@@ -46,7 +55,7 @@ def cadastrar_movimentacao():
     print()
     print("Tipo:", tipo)
     print("Descrição:", descricao)
-    print("Valor: R$", valor)
+    print(f"Valor: {formatar_valor(valor)}")
 
 
 while True:
@@ -59,31 +68,86 @@ while True:
         cadastrar_movimentacao()
 
     elif opcao == "2":
+        print()
+        print("========== VER MOVIMENTAÇÕES ==========")
+        print("1 - Todas")
+        print("2 - Apenas entradas")
+        print("3 - Apenas despesas")
+
+        filtro = input("Escolha apenas uma opção: ")
+
         movimentacoes = listar_movimentacoes()
 
-        print()
-        print("========== MOVIMENTAÇÕES ==========")
+        if filtro == "1":
+            print()
+            print("========== TODAS AS MOVIMENTAÇÕES ==========")
 
-        if not movimentacoes:
-            print("Nenhuma movimentação encontrada.")
-        else:
+            if not movimentacoes:
+                print("Nenhuma movimentação encontrada.")
+            else:
+                for movimentacao in movimentacoes:
+                    id_mov, tipo, descricao, valor = movimentacao
+
+                    print(f"ID: {id_mov}")
+                    print(f"Tipo: {tipo}")
+                    print(f"Descrição: {descricao}")
+                    print(f"Valor: {formatar_valor(valor)}")
+                    print("--------------------------------")
+
+        elif filtro == "2":
+            print()
+            print("========== ENTRADAS ==========")
+
+            entradas = []
+
             for movimentacao in movimentacoes:
-                id_mov, tipo, descricao, valor = movimentacao
+                if movimentacao[1] == "entrada":
+                    entradas.append(movimentacao)
 
-                print(f"ID: {id_mov}")
-                print(f"Tipo: {tipo}")
-                print(f"Descrição: {descricao}")
-                print(f"Valor: R$ {valor:.2f}")
-                print("--------------------------------")
+            if not entradas:
+                print("Nenhuma movimentação encontrada.")
+
+            else:
+                for movimentacao in entradas:
+                    id_mov, tipo, descricao, valor = movimentacao
+
+                    print(f"ID: {id_mov}")
+                    print(f"Tipo: {tipo}")
+                    print(f"Descrição: {descricao}")
+                    print(f"Valor: {formatar_valor(valor)}")
+                    print("--------------------------------")
+
+        elif filtro == "3":
+            print()
+            print("========== DESPESAS ==========")
+
+            despesas = []
+
+            for movimentacao in movimentacoes:
+                if movimentacao[1] == "despesa":
+                    despesas.append(movimentacao)
+
+            if not despesas:
+                print("Nenhuma despesa encontrada.")
+            else:
+                for movimetacao in despesas:
+                    id_mov, tipo, descricao, valor = movimentacao
+
+                    print(f"ID: {id_mov}")
+                    print(f"Tipo: {tipo}")
+                    print(f"Descrição: {descricao}")
+                    print(f"Valor: {formatar_valor(valor)}")
+                    print("--------------------------------")
+
 
     elif opcao == "3":
         total_entradas, total_despesas, saldo = calcular_saldo()
 
         print()
         print("============== SALDO ==============")
-        print(f"Total de entradas: R$ {total_entradas:.2f}")
-        print(f"Total de despesas: R$ {total_despesas:.2f}")
-        print(f"Saldo Atual:       R$ {saldo:.2f}")
+        print(f"Total de entradas: {formatar_valor(total_entradas)}")
+        print(f"Total de despesas: {formatar_valor(total_despesas)}")
+        print(f"Saldo Atual:       {formatar_valor(saldo)}")
 
     elif opcao == "4":
         try:
@@ -110,7 +174,7 @@ while True:
         print("======= MOVIMENTAÇÃO ENCONTRADA =======")
         print(f"Tipo: {movimentacao_encontrada[1]}")
         print(f"Descrição: {movimentacao_encontrada[2]}")
-        print(f"Valor: R$ {movimentacao_encontrada[3]:.2f}")
+        print(f"Valor: {formatar_valor(movimentacao_encontrada[3])}")
 
         while True:
             novo_tipo = input("Digite o novo tipo (entrada/despesa): ").lower()
@@ -122,17 +186,13 @@ while True:
 
         nova_descricao = input("Digite a nova descrição: ")
 
-        try:
-            novo_valor = float(input("Digite o novo valor: "))
-        except ValueError:
-            print("Valor inválido!")
-            continue
+        novo_valor = ler_valor()
 
         print()
         print("======= NOVOS DADOS =======")
         print(f"Tipo: {novo_tipo}")
         print(f"Descrição: {nova_descricao}")
-        print(f"Valor: R$ {novo_valor}")
+        print(f"Valor: {formatar_valor(novo_valor)}")
 
         confirmacao = input("Deseja salvar as alterações? (s/n): ").lower()
 
@@ -173,6 +233,17 @@ while True:
 
 
     elif opcao == "6":
+        total_entradas, total_despesas, saldo = calcular_saldo()
+
+        print()
+        print("========== RESUMO FINANCEIRO ==========")
+        print(f"Total de entradas: {formatar_valor(total_entradas)}")
+        print(f"Total despesas:    {formatar_valor(total_despesas)}")
+        print(f"Saldo atual:       {formatar_valor(saldo)}")
+
+
+
+    elif opcao == "7":
         print("Saindo do programa...")
         break
 
