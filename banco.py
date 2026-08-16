@@ -49,6 +49,39 @@ def listar_movimentacoes():
 
     return movimentacoes
 
+
+def excluir_movimentacao(id_movimentacao):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        DELETE FROM movimentacoes
+        WHERE id = ?
+    """, (id_movimentacao,))
+
+    if cursor.rowcount > 0:
+        exlcuida = True
+    else:
+        excluida = False
+    
+    conexao.commit()
+    conexao.close
+
+    return excluida
+
+def editar_movimentacao(id_movimentacao, tipo, descricao, valor):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        UPDATE movimentacoes
+        SET tipo = ?, descricao = ?, valor = ?
+        WHERE id = ?
+    """, (tipo, descricao, valor, id_movimentacao))
+
+    conexao.commit()
+    conexao.close()
+
 def calcular_saldo():
     conexao = conectar()
     cursor = conexao.cursor()
