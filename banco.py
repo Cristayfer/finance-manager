@@ -60,12 +60,12 @@ def excluir_movimentacao(id_movimentacao):
     """, (id_movimentacao,))
 
     if cursor.rowcount > 0:
-        exlcuida = True
+        excluida = True
     else:
         excluida = False
     
     conexao.commit()
-    conexao.close
+    conexao.close()
 
     return excluida
 
@@ -103,3 +103,25 @@ def calcular_saldo():
     saldo = total_entradas - total_despesas
 
     return total_entradas, total_despesas, saldo
+
+def resumo_financeiro():
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT 
+            COUNT(*),
+            SUM(CASE WHEN tipo = 'entrada' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN tipo = 'despesa' THEN 1 ELSE 0 END)
+        FROM movimentacoes
+    """)
+
+    resultado = cursor.fetchone()
+
+    conexao.close()
+
+    total_movimentacoes = resultado[0]
+    quantidade_entradas = resultado[1] or 0
+    quantidade_despesas = resultado[2] or 0
+
+    return total_movimentacoes, quantidade_entradas, quantidade_despesas

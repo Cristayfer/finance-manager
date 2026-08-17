@@ -4,7 +4,8 @@ from banco import (
     listar_movimentacoes,
     calcular_saldo,
     excluir_movimentacao,
-    editar_movimentacao
+    editar_movimentacao,
+    resumo_financeiro
 )
 
 criar_tabela()
@@ -130,7 +131,7 @@ while True:
             if not despesas:
                 print("Nenhuma despesa encontrada.")
             else:
-                for movimetacao in despesas:
+                for movimentacao in despesas:
                     id_mov, tipo, descricao, valor = movimentacao
 
                     print(f"ID: {id_mov}")
@@ -235,8 +236,14 @@ while True:
     elif opcao == "6":
         total_entradas, total_despesas, saldo = calcular_saldo()
 
+        total_movimentacoes, quantidade_entradas, quantidade_despesas = resumo_financeiro()
+
         print()
         print("========== RESUMO FINANCEIRO ==========")
+        print(f"Total de movimentações: {total_movimentacoes}")
+        print(f"Quantidade de entradas: {quantidade_entradas}")
+        print(f"Quantidade de despesas: {quantidade_despesas}")
+        print("---------------------------------------")
         print(f"Total de entradas: {formatar_valor(total_entradas)}")
         print(f"Total despesas:    {formatar_valor(total_despesas)}")
         print(f"Saldo atual:       {formatar_valor(saldo)}")
