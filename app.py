@@ -5,7 +5,8 @@ from banco import (
     calcular_saldo,
     excluir_movimentacao,
     editar_movimentacao,
-    resumo_financeiro
+    resumo_financeiro,
+    buscar_movimentacoes
 )
 
 criar_tabela()
@@ -22,6 +23,7 @@ def mostrar_menu():
     print("5 - Excluir movimentação")
     print("6 - Resumo financeiro")
     print("7 - Sair")
+    print("8 - Buscar movimentações")
 
 
 def ler_valor():
@@ -29,9 +31,24 @@ def ler_valor():
         try:
             valor = input("Digite o valor: ")
             valor = valor.replace(",", ".")
-            return float(valor)
+            valor = float(valor)
+
+            if valor <= 0:
+                print("Valor inválido. Digite um valor maior que 0.")
+                continue
+
+            return valor
         except ValueError:
             print("Valor inválido. Digite um número válido.")
+
+def ler_descricao():
+    while True:
+        descricao = input("Digite a descrição: ").strip()
+
+        if descricao:
+            return descricao
+
+        print("Descrição inválida. Digite uma descrição.")
 
 def formatar_valor(valor):
     return f"R$ {valor:.2f}".replace(".", ",")
@@ -45,7 +62,7 @@ def cadastrar_movimentacao():
 
         print("Tipo inválido. Digite entrada ou despesa.")
 
-    descricao = input("Digite a descrição: ")
+    descricao = ler_descricao()
 
     valor = ler_valor()
 
@@ -185,7 +202,7 @@ while True:
 
             print("Tipo inválido. Digite entrada ou despesa.")
 
-        nova_descricao = input("Digite a nova descrição: ")
+        nova_descricao = ler_descricao()
 
         novo_valor = ler_valor()
 
@@ -254,5 +271,33 @@ while True:
         print("Saindo do programa...")
         break
 
+    elif opcao == "8":
+        print()
+        print("========== BUSCAR MOVIMENTAÇÃO ==========")
+
+        termo = input("Digite o que deseja buscar: ").strip()
+
+        if not termo:
+            print("Digite algo para realizar a buscar.")
+            continue
+
+        movimentacoes = buscar_movimentacoes(termo)
+
+        if not movimentacoes:
+            print("Nenhuma movimentação encontrada.")
+        else:
+            print()
+            print("========== RESULTADOS ==========")
+
+            for movimentacao in movimentacoes:
+                id_mov, tipo, descricao, valor = movimentacao
+
+                print(f"ID: {id_mov}")
+                print(f"Tipo: {tipo}")
+                print(f"Descrição: {descricao}")
+                print(f"Valor: {formatar_valor(valor)}")
+                print("--------------------------------")
+
     else:
         print("Opção inválida.")
+        

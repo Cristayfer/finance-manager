@@ -125,3 +125,20 @@ def resumo_financeiro():
     quantidade_despesas = resultado[2] or 0
 
     return total_movimentacoes, quantidade_entradas, quantidade_despesas
+
+
+def buscar_movimentacoes(termo):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT id, tipo, descricao, valor
+        FROM movimentacoes
+        WHERE descricao LIKE ?
+    """, (f"%{termo}%",))
+
+    movimentacoes = cursor.fetchall()
+
+    conexao.close()
+
+    return movimentacoes
