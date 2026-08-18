@@ -1,3 +1,4 @@
+from datetime import datetime
 from banco import (
     criar_tabela,
     inserir_movimentacao,
@@ -6,10 +7,14 @@ from banco import (
     excluir_movimentacao,
     editar_movimentacao,
     resumo_financeiro,
-    buscar_movimentacoes
+    buscar_movimentacoes,
+    adicionar_coluna_data,
+    calcular_saldo_do_dia,
+    buscar_por_data
 )
 
 criar_tabela()
+adicionar_coluna_data()
 
 def mostrar_menu():
     print("================================")
@@ -21,9 +26,11 @@ def mostrar_menu():
     print("3 - Ver saldo")
     print("4 - Editar movimentação")
     print("5 - Excluir movimentação")
-    print("6 - Resumo financeiro")
-    print("7 - Sair")
+    print("6 - Resumo do dia")
+    print("7 - Resumo financeiro")
     print("8 - Buscar movimentações")
+    print("9 - Buscar por data")
+    print("10 - Sair")
 
 
 def ler_valor():
@@ -41,6 +48,24 @@ def ler_valor():
         except ValueError:
             print("Valor inválido. Digite um número válido.")
 
+
+def ler_data():
+    while True:
+        data = input("Digite a data (ddmmaaaa): ").strip()
+
+        if len(data) != 8 or not data.isdigit():
+            print("Data inválida. Digite 8 números.")
+            continue
+
+        data_formatada = f"{data[:2]}/{data[2:4]}/{data[4:]}"
+
+        try:
+            datetime.strptime(data_formatada, "%d/%m/%Y")
+            return data_formatada
+
+        except ValueError:
+            print("Data inválida. Digite uma data existente.")
+
 def ler_descricao():
     while True:
         descricao = input("Digite a descrição: ").strip()
@@ -52,6 +77,18 @@ def ler_descricao():
 
 def formatar_valor(valor):
     return f"R$ {valor:.2f}".replace(".", ",")
+
+def exibir_movimentacao(movimentacao):
+    id_mov, tipo, descricao, valor, data = movimentacao
+
+    print(f"ID: {id_mov}")
+    print(f"Tipo: {tipo}")
+    print(f"Descricao: {descricao}")
+    print(f"Valor: {formatar_valor(valor)}")
+    print(f"Data: {data}")
+    print("--------------------------------")
+
+
 
 def cadastrar_movimentacao():
     while True:
@@ -104,13 +141,7 @@ while True:
                 print("Nenhuma movimentação encontrada.")
             else:
                 for movimentacao in movimentacoes:
-                    id_mov, tipo, descricao, valor = movimentacao
-
-                    print(f"ID: {id_mov}")
-                    print(f"Tipo: {tipo}")
-                    print(f"Descrição: {descricao}")
-                    print(f"Valor: {formatar_valor(valor)}")
-                    print("--------------------------------")
+                    exibir_movimentacao(movimentacao)
 
         elif filtro == "2":
             print()
@@ -127,13 +158,7 @@ while True:
 
             else:
                 for movimentacao in entradas:
-                    id_mov, tipo, descricao, valor = movimentacao
-
-                    print(f"ID: {id_mov}")
-                    print(f"Tipo: {tipo}")
-                    print(f"Descrição: {descricao}")
-                    print(f"Valor: {formatar_valor(valor)}")
-                    print("--------------------------------")
+                    exibir_movimentacao(movimentacao)
 
         elif filtro == "3":
             print()
@@ -149,13 +174,7 @@ while True:
                 print("Nenhuma despesa encontrada.")
             else:
                 for movimentacao in despesas:
-                    id_mov, tipo, descricao, valor = movimentacao
-
-                    print(f"ID: {id_mov}")
-                    print(f"Tipo: {tipo}")
-                    print(f"Descrição: {descricao}")
-                    print(f"Valor: {formatar_valor(valor)}")
-                    print("--------------------------------")
+                    exibir_movimentacao(movimentacao)
 
 
     elif opcao == "3":
@@ -249,8 +268,21 @@ while True:
         else:
             print("Exclusão cancelada.")
 
-
     elif opcao == "6":
+        total_entradas, total_despesas, saldo = calcular_saldo_do_dia()
+
+        data_atual = datetime.now().strftime("%d/%m/%Y")
+
+        print()
+        print("========== RESUMO DO DIA ==========")
+        print(f"Data: {data_atual}")
+        print("---------------------------------------")
+        print(f"Total de entradas: {formatar_valor(total_entradas)}")
+        print(f"Total despesas:    {formatar_valor(total_despesas)}")
+        print(f"Total dia:         {formatar_valor(saldo)}")
+
+
+    elif opcao == "7":
         total_entradas, total_despesas, saldo = calcular_saldo()
 
         total_movimentacoes, quantidade_entradas, quantidade_despesas = resumo_financeiro()
@@ -261,15 +293,9 @@ while True:
         print(f"Quantidade de entradas: {quantidade_entradas}")
         print(f"Quantidade de despesas: {quantidade_despesas}")
         print("---------------------------------------")
-        print(f"Total de entradas: {formatar_valor(total_entradas)}")
-        print(f"Total despesas:    {formatar_valor(total_despesas)}")
-        print(f"Saldo atual:       {formatar_valor(saldo)}")
-
-
-
-    elif opcao == "7":
-        print("Saindo do programa...")
-        break
+        print(f"Total de entradas:      {formatar_valor(total_entradas)}")
+        print(f"Total de despesas:      {formatar_valor(total_despesas)}")
+        print(f"Saldo atual:            {formatar_valor(saldo)}")
 
     elif opcao == "8":
         print()
@@ -290,13 +316,28 @@ while True:
             print("========== RESULTADOS ==========")
 
             for movimentacao in movimentacoes:
-                id_mov, tipo, descricao, valor = movimentacao
+                exibir_movimentacao(movimentacao)
 
-                print(f"ID: {id_mov}")
-                print(f"Tipo: {tipo}")
-                print(f"Descrição: {descricao}")
-                print(f"Valor: {formatar_valor(valor)}")
-                print("--------------------------------")
+    elif opcao == "9":
+        print()
+        print("========== BUSCAR POR DATA ==========")
+
+        data = ler_data()
+
+        movimentacoes = buscar_por_data(data)
+
+        if not movimentacoes:
+            print("Nenhuma movimentação encontrada nessa data.")
+        else:
+            print()
+            print(f"========== MOVIMENTAÇÕES DE {data} ==========")
+
+            for movimentacao in movimentacoes:
+                exibir_movimentacao(movimentacao)
+
+    elif opcao == "10":
+        print("Saindo do programa...")
+        break
 
     else:
         print("Opção inválida.")
