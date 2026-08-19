@@ -222,7 +222,7 @@ def calcular_saldo_periodo(data_inicial, data_final):
 
     resultado = cursor.fetchone()
 
-    conexao.closer()
+    conexao.close()
 
     total_entradas = resultado[0] or 0
     total_despesas = resultado[1] or 0

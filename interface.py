@@ -1,5 +1,5 @@
 import tkinter as tk
-from banco import calcular_saldo
+from banco import calcular_saldo, inserir_movimentacao, listar_movimentacoes
 
 janela = tk.Tk()
 
@@ -41,11 +41,12 @@ tk.Label(
     font=("Arial", 14)
 ).pack(pady=(20, 10))
 
-tk.Label(
+label_saldo = tk.Label(
     cartao_saldo,
     text=formatar_valor(saldo),
     font=("Arial", 22, "bold")
-).pack()
+)
+label_saldo.pack()
 
 
 cartao_entradas = tk.Frame(
@@ -65,11 +66,12 @@ tk.Label(
     font=("Arial", 14)
 ).pack(pady=(20, 10))
 
-tk.Label(
+label_entradas = tk.Label(
     cartao_entradas,
     text=formatar_valor(total_entradas),
     font=("Arial", 22, "bold")
-).pack()
+)
+label_entradas.pack()
 
 
 cartao_despesas = tk.Frame(
@@ -90,11 +92,29 @@ tk.Label(
     font=("Arial", 14)
 ).pack(pady=(20, 10))
 
-tk.Label(
+label_despesas = tk.Label(
     cartao_despesas,
     text=formatar_valor(total_despesas),
     font=("Arial", 22, "bold")
-).pack()
+)
+label_despesas.pack()
+
+def atualizar_interface():
+    total_entradas, total_despesas, saldo = calcular_saldo()
+
+    label_saldo.config(
+        text=formatar_valor(saldo)
+    )
+
+    label_entradas.config(
+        text=formatar_valor(total_entradas)
+    )
+
+    label_despesas.config(
+        text=formatar_valor(total_despesas)
+    )
+
+    carregar_movimentacoes()
 
 
 frame_botoes = tk.Frame(janela)
@@ -110,7 +130,62 @@ def nova_entrada():
         janela_entrada,
         text="Nova entrada",
         font=("Arial", 20, "bold")
-    ).pack(pady=25)
+    ).pack(pady=20)
+
+    tk.Label(
+        janela_entrada,
+        text="Descrição:"
+    ).pack()
+
+    campo_descricao = tk.Entry(
+        janela_entrada,
+        width=35
+    )
+    campo_descricao.pack(pady=5)
+
+    tk.Label(
+        janela_entrada,
+        text="Valor:"
+    ).pack()
+
+    campo_valor = tk.Entry(
+        janela_entrada,
+        width=35
+    )
+    campo_valor.pack(pady=5)
+
+    def cadastrar():
+        descricao = campo_descricao.get()
+        valor = campo_valor.get()
+
+        if descricao == "" or valor == "":
+            return
+
+        valor = valor.replace(",", ".")
+
+        try:
+            valor = float(valor)
+        except ValueError:
+            return
+
+        inserir_movimentacao(
+            "entrada",
+            descricao,
+            valor
+        )
+
+        atualizar_interface()
+        janela_entrada.destroy()
+
+    botao_cadastrar = tk.Button(
+        janela_entrada,
+        text="Cadastrar",
+        width=20,
+        command=cadastrar
+    )
+    botao_cadastrar.pack(pady=25)
+
+    janela_entrada.bind("<Return>", lambda event: cadastrar())
 
 def nova_despesa():
     janela_despesa = tk.Toplevel(janela)
@@ -122,8 +197,63 @@ def nova_despesa():
         janela_despesa,
         text="Nova despesa",
         font=("Arial", 20, "bold")
-    ).pack(pady=25)
+    ).pack(pady=20)
 
+    tk.Label(
+        janela_despesa,
+        text="Descrição:"
+    ).pack()
+
+    campo_descricao = tk.Entry(
+        janela_despesa,
+        width=35
+    )
+    campo_descricao.pack(pady=5)
+
+    tk.Label(
+        janela_despesa,
+        text="Valor:"
+    ).pack()
+
+    campo_valor = tk.Entry(
+        janela_despesa,
+        width=35
+    )
+    campo_valor.pack(pady=5)
+
+    def cadastrar():
+        descricao = campo_descricao.get()
+        valor = campo_valor.get()
+
+        if descricao == "" or valor == "":
+            return
+
+        valor = valor.replace(",", ".")
+
+        try:
+            valor = float(valor)
+        except ValueError:
+            return
+
+        inserir_movimentacao(
+            "despesa",
+            descricao,
+            valor
+        )
+        
+        atualizar_interface()
+        janela_despesa.destroy()
+
+    botao_cadastrar = tk.Button(
+        janela_despesa,
+        text="Cadastrar",
+        width=20,
+        command=cadastrar
+    )
+    botao_cadastrar.pack(pady=25)
+
+    janela_despesa.bind("<Return>", lambda event: cadastrar())
+    
 tk.Button(
     frame_botoes,
     text="+ Nova entrada",
@@ -140,7 +270,36 @@ tk.Button(
     command=nova_despesa
 ).pack(side="left", pady=10)
 
+tk.Label(
+    janela,
+    text="Movimentações",
+    font=("Arial", 18, "bold")
+).pack(pady=(10, 5))
 
+frame_movimentacoes = tk.Frame(janela)
+frame_movimentacoes.pack()
 
+def carregar_movimentacoes():
+    for widget in frame_movimentacoes.winfo_children():
+        widget.destroy()
+
+    movimentacoes = listar_movimentacoes()
+
+    for movimentacao in movimentacoes:
+        id_mov, tipo, descricao, valor, data = movimentacao
+
+        texto = f"{data}  |  {descricao}  |  R$ {valor:.2f}"
+
+        tk.Label(
+            frame_movimentacoes,
+            text=texto,
+            font=("Arial", 11),
+            anchor=("w"),
+            width=70,
+        ).pack(pady=2)
+
+carregar_movimentacoes()
+
+    
 janela.mainloop()
 
