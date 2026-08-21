@@ -4,7 +4,7 @@ from banco import calcular_saldo, inserir_movimentacao, listar_movimentacoes
 janela = tk.Tk()
 
 janela.title("Controle financeiro")
-janela.geometry("900x600")
+janela.geometry("1200x800")
 janela.resizable(False, False)
 
 total_entradas, total_despesas, saldo = calcular_saldo()
@@ -285,18 +285,84 @@ def carregar_movimentacoes():
 
     movimentacoes = listar_movimentacoes()
 
+    # =========================
+    # CABEÇALHO
+    # =========================
+
+    cabecalho = tk.Frame(
+        frame_movimentacoes
+    )
+    cabecalho.pack()
+
+    tk.Label(
+        cabecalho,
+        text="DATA",
+        font=("Arial", 10, "bold"),
+        width=12
+    ).grid(row=0, column=0, padx=5, pady=5)
+
+    tk.Label(
+        cabecalho,
+        text="TIPO",
+        font=("Arial", 10, "bold"),
+        width=12
+    ).grid(row=0, column=1, padx=5, pady=5)
+
+    tk.Label(
+        cabecalho,
+        text="DESCRIÇÃO",
+        font=("Arial", 10, "bold"),
+        width=25
+    ).grid(row=0, column=2, padx=5, pady=5)
+
+    tk.Label(
+        cabecalho,
+        text="VALOR",
+        font=("Arial", 10, "bold"),
+        width=15
+    ).grid(row=0, column=3, padx=5, pady=5)
+
+
+    # =========================
+    # MOVIMENTAÇÕES
+    # =========================
+
     for movimentacao in movimentacoes:
+
         id_mov, tipo, descricao, valor, data = movimentacao
 
-        texto = f"{data}  |  {descricao}  |  R$ {valor:.2f}"
+        linha = tk.Frame(
+            frame_movimentacoes,
+            relief="solid",
+            borderwidth=1
+        )
+
+        linha.pack(pady=2)
 
         tk.Label(
-            frame_movimentacoes,
-            text=texto,
-            font=("Arial", 11),
-            anchor=("w"),
-            width=70,
-        ).pack(pady=2)
+            linha,
+            text=data,
+            width=12
+        ).grid(row=0, column=0, padx=5, pady=5)
+
+        tk.Label(
+            linha,
+            text=tipo.capitalize(),
+            width=12
+        ).grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(
+            linha,
+            text=descricao,
+            width=25,
+            anchor="w"
+        ).grid(row=0, column=2, padx=5, pady=5)
+
+        tk.Label(
+            linha,
+            text=formatar_valor(valor),
+            width=15
+        ).grid(row=0, column=3, padx=5, pady=5)
 
 carregar_movimentacoes()
 
