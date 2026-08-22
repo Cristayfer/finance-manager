@@ -1,5 +1,12 @@
 import tkinter as tk
-from banco import calcular_saldo, inserir_movimentacao, listar_movimentacoes
+from tkinter import messagebox
+from banco import (
+    calcular_saldo, 
+    inserir_movimentacao, 
+    listar_movimentacoes,
+    editar_movimentacao,
+    excluir_movimentacao
+)
 
 janela = tk.Tk()
 
@@ -285,84 +292,284 @@ def carregar_movimentacoes():
 
     movimentacoes = listar_movimentacoes()
 
-    # =========================
-    # CABEÇALHO
-    # =========================
 
-    cabecalho = tk.Frame(
-        frame_movimentacoes
+    largura_data = 120
+    largura_tipo = 100
+    largura_descricao = 220
+    largura_valor = 120
+    largura_acoes = 180
+
+    larguras = [
+        largura_data,
+        largura_tipo,
+        largura_descricao,
+        largura_valor,
+        largura_acoes
+    ]
+
+
+    tabela = tk.Frame(
+        frame_movimentacoes,
+        bg="#f4f4f4"
     )
-    cabecalho.pack()
 
-    tk.Label(
-        cabecalho,
-        text="DATA",
-        font=("Arial", 10, "bold"),
-        width=12
-    ).grid(row=0, column=0, padx=5, pady=5)
+    tabela.pack()
 
-    tk.Label(
-        cabecalho,
-        text="TIPO",
-        font=("Arial", 10, "bold"),
-        width=12
-    ).grid(row=0, column=1, padx=5, pady=5)
-
-    tk.Label(
-        cabecalho,
-        text="DESCRIÇÃO",
-        font=("Arial", 10, "bold"),
-        width=25
-    ).grid(row=0, column=2, padx=5, pady=5)
-
-    tk.Label(
-        cabecalho,
-        text="VALOR",
-        font=("Arial", 10, "bold"),
-        width=15
-    ).grid(row=0, column=3, padx=5, pady=5)
+    # Define as larguras FIXAS das colunas
+    for coluna, largura in enumerate(larguras):
+        tabela.grid_columnconfigure(
+            coluna,
+            minsize=largura,
+            weight=0
+        )
 
 
-    # =========================
-    # MOVIMENTAÇÕES
-    # =========================
+    cabecalhos = [
+        "DATA",
+        "TIPO",
+        "DESCRIÇÃO",
+        "VALOR",
+        "AÇÕES"
+    ]
 
-    for movimentacao in movimentacoes:
+    for coluna, texto in enumerate(cabecalhos):
+
+        tk.Label(
+            tabela,
+            text=texto,
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).grid(
+            row=0,
+            column=coluna,
+            sticky="nsew",
+            pady=(0, 8)
+        )
+
+    for linha, movimentacao in enumerate(
+        movimentacoes,
+        start=1
+    ):
 
         id_mov, tipo, descricao, valor, data = movimentacao
 
-        linha = tk.Frame(
-            frame_movimentacoes,
-            relief="solid",
-            borderwidth=1
+        tk.Label(
+            tabela,
+            text=data,
+            font=("Arial", 9),
+            bg="white",
+            fg="#333333",
+            highlightbackground="#dddddd",
+            highlightthickness=1
+        ).grid(
+            row=linha,
+            column=0,
+            sticky="nsew",
+            padx=(0, 1),
+            pady=3,
+            ipady=7
         )
 
-        linha.pack(pady=2)
+        cor_tipo = (
+            "#198754"
+            if tipo == "entrada"
+            else "#dc3545"
+        )
 
         tk.Label(
-            linha,
-            text=data,
-            width=12
-        ).grid(row=0, column=0, padx=5, pady=5)
-
-        tk.Label(
-            linha,
+            tabela,
             text=tipo.capitalize(),
-            width=12
-        ).grid(row=0, column=1, padx=5, pady=5)
+            font=("Arial", 9, "bold"),
+            bg="white",
+            fg=cor_tipo,
+            highlightbackground="#dddddd",
+            highlightthickness=1
+        ).grid(
+            row=linha,
+            column=1,
+            sticky="nsew",
+            padx=(0, 1),
+            pady=3,
+            ipady=7
+        )
+
 
         tk.Label(
-            linha,
+            tabela,
             text=descricao,
-            width=25,
-            anchor="w"
-        ).grid(row=0, column=2, padx=5, pady=5)
+            font=("Arial", 9),
+            bg="white",
+            fg="#222222",
+            anchor="w",
+            highlightbackground="#dddddd",
+            highlightthickness=1
+        ).grid(
+            row=linha,
+            column=2,
+            sticky="nsew",
+            padx=(0, 1),
+            pady=3,
+            ipady=7
+        )
 
         tk.Label(
-            linha,
+            tabela,
             text=formatar_valor(valor),
-            width=15
-        ).grid(row=0, column=3, padx=5, pady=5)
+            font=("Arial", 9, "bold"),
+            bg="white",
+            fg="#222222",
+            anchor="e",
+            highlightbackground="#dddddd",
+            highlightthickness=1
+        ).grid(
+            row=linha,
+            column=3,
+            sticky="nsew",
+            padx=(0, 1),
+            pady=3,
+            ipady=7
+        )
+
+        frame_acoes = tk.Frame(
+            tabela,
+            bg="white",
+            highlightbackground="#dddddd",
+            highlightthickness=1
+        )
+
+        frame_acoes.grid(
+            row=linha,
+            column=4,
+            sticky="nsew",
+            pady=3
+        )
+
+        tk.Button(
+            frame_acoes,
+            text="Editar",
+            font=("Arial", 8),
+            width=7,
+            relief="flat",
+            bg="#eeeeee",
+            activebackground="#dddddd",
+            command=lambda id_mov=id_mov,
+            tipo=tipo,
+            descricao=descricao,
+            valor=valor: editar_janela(
+                id_mov,
+                tipo,
+                descricao,
+                valor
+            )
+        ).pack(
+            side="left",
+            padx=5,
+            pady=5
+        )
+
+        tk.Button(
+            frame_acoes,
+            text="Excluir",
+            font=("Arial", 8),
+            width=7,
+            relief="flat",
+            bg="#eeeeee",
+            activebackground="#dddddd",
+            command=lambda id_mov=id_mov: excluir(id_mov)
+        ).pack(
+            side="left",
+            padx=2,
+            pady=5
+        )
+
+def excluir(id_movimentacao):
+    resposta = messagebox.askquestion(
+        "Confirmar exclusão",
+        "Deseja realmente excluir esta movimentação?"
+    )
+
+    if resposta:
+        excluir_movimentacao(id_movimentacao)
+        atualizar_interface()
+
+
+def editar_janela(id_mov, tipo, descricao, valor):
+
+    janela_edicao = tk.Toplevel(janela)
+    janela_edicao.title("Editar movimentação")
+    janela_edicao.geometry("400x350")
+    janela_edicao.resizable(False, False)
+
+    tk.Label(
+        janela_edicao,
+        text="Editar movimentação",
+        font=("Arial", 20, "bold")
+    ).pack(pady=20)
+
+    tk.Label(
+        janela_edicao,
+        text="Descrição:"
+    ).pack()
+
+    campo_descricao = tk.Entry(
+        janela_edicao,
+        width=35
+    )
+    campo_descricao.pack(pady=5)
+
+    campo_descricao.insert(0, descricao)
+
+    tk.Label(
+        janela_edicao,
+        text="Valor:"
+    ).pack()
+
+    campo_valor = tk.Entry(
+        janela_edicao,
+        width=35
+    )
+    campo_valor.pack(pady=5)
+
+    campo_valor.insert(0, str(valor).replace(".", ","))
+
+    def salvar():
+
+        nova_descricao = campo_descricao.get()
+        novo_valor = campo_valor.get()
+
+        if nova_descricao == "" or novo_valor == "":
+            return
+
+        novo_valor = novo_valor.replace(",", ".")
+
+        try:
+            novo_valor = float(novo_valor)
+        except ValueError:
+            return
+
+        editar_movimentacao(
+            id_mov,
+            tipo,
+            nova_descricao,
+            novo_valor
+        )
+
+        janela_edicao.destroy()
+
+        atualizar_interface()
+
+    tk.Button(
+        janela_edicao,
+        text="Salvar",
+        width=20,
+        command=salvar
+    ).pack(pady=25)
+
+    janela_edicao.bind(
+        "<Return>",
+        lambda event: salvar()
+    )
 
 carregar_movimentacoes()
 
