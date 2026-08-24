@@ -8,6 +8,8 @@ from banco import (
     excluir_movimentacao
 )
 
+janela_cadastro = None
+
 def iniciar_interface():
 
 
@@ -37,77 +39,123 @@ def iniciar_interface():
         frame_cartoes,
         width=250,
         height=150,
-        relief="solid",
-        borderwidth=1
-
+        bg="#ffffff",
+        highlightbackground="#dddddd",
+        highlightthickness=1,
     )
 
-    cartao_saldo.pack(side="left", padx=10)
+    cartao_saldo.pack(
+        side="left",
+        padx=10
+    )
+
     cartao_saldo.pack_propagate(False)
 
     tk.Label(
         cartao_saldo,
         text="Saldo atual",
-        font=("Arial", 14)
-    ).pack(pady=(20, 10))
+        font=("Arial", 11),
+        bg="#ffffff",
+        fg="#666666"
+    ).pack(
+        anchor="w",
+        padx=20,
+        pady=(20, 5)
+    )
 
     label_saldo = tk.Label(
         cartao_saldo,
         text=formatar_valor(saldo),
-        font=("Arial", 22, "bold")
+        font=("Arial", 24, "bold"),
+        bg="#ffffff",
+        fg="#222222"
     )
-    label_saldo.pack()
+    label_saldo.pack(
+        anchor="w",
+        padx=20
+    )
 
 
     cartao_entradas = tk.Frame(
         frame_cartoes,
         width=250,
         height=150,
-        relief="solid",
-        borderwidth=1
+        bg="#ffffff",
+        highlightbackground="#dddddd",
+        highlightthickness=1,
     )
 
-    cartao_entradas.pack(side="left", padx=10)
+    cartao_entradas.pack(
+        side="left", 
+        padx=10
+    )
+
     cartao_entradas.pack_propagate(False)
 
     tk.Label(
         cartao_entradas,
         text="Total de entradas",
-        font=("Arial", 14)
-    ).pack(pady=(20, 10))
+        font=("Arial", 11),
+        bg="#ffffff",
+        fg="#666666"
+    ).pack(
+        anchor="w",
+        padx=20,
+        pady=(20, 5)
+    )
 
     label_entradas = tk.Label(
         cartao_entradas,
         text=formatar_valor(total_entradas),
-        font=("Arial", 22, "bold")
+        font=("Arial", 24, "bold"),
+        bg="#ffffff",
+        fg="#198754"
     )
-    label_entradas.pack()
+    label_entradas.pack(
+        anchor="w",
+        padx=20
+    )
 
 
     cartao_despesas = tk.Frame(
         frame_cartoes,
         width=250,
         height=150,
-        relief="solid",
-        borderwidth=1
+        bg="#ffffff",
+        highlightbackground="#dddddd",
+        highlightthickness=1
     )
 
-    cartao_despesas.pack(side="left", padx=10)
-    cartao_despesas.pack_propagate(False)
+    cartao_despesas.pack(
+        side="left", 
+        padx=10
+    )
 
+    cartao_despesas.pack_propagate(False)
 
     tk.Label(
         cartao_despesas,
         text="Total de despesas",
-        font=("Arial", 14)
-    ).pack(pady=(20, 10))
+        font=("Arial", 11),
+        bg="#ffffff",
+        fg="#666666"
+    ).pack(
+        anchor="w",
+        padx=20,
+        pady=(20, 5)
+    )
 
     label_despesas = tk.Label(
         cartao_despesas,
         text=formatar_valor(total_despesas),
-        font=("Arial", 22, "bold")
+        font=("Arial", 24, "bold"),
+        bg="#ffffff",
+        fg="#dc3545"
     )
-    label_despesas.pack()
+    label_despesas.pack(
+        anchor="w",
+        padx=20
+    )
 
     def atualizar_interface():
         total_entradas, total_despesas, saldo = calcular_saldo()
@@ -131,35 +179,53 @@ def iniciar_interface():
     frame_botoes.pack(pady=30)
 
     def nova_entrada():
-        janela_entrada = tk.Toplevel(janela)
-        janela_entrada.title("Nova entrada")
-        janela_entrada.geometry("400x300")
-        janela_entrada.resizable(False, False)
+        global janela_cadastro
+
+        if janela_cadastro is not None and janela_cadastro.winfo_exists():
+            janela_cadastro.lift()
+            janela_cadastro.focus_force()
+            return
+        
+        janela_cadastro = tk.Toplevel(janela)
+        janela_cadastro.title("Nova entrada")
+        janela_cadastro.geometry("400x300")
+        janela_cadastro.resizable(False, False)
+
+        def fechar_cadastro():
+            global janela_cadastro
+
+            janela_cadastro.destroy()
+            janela_cadastro = None
+
+        janela_cadastro.protocol(
+            "WM_DELETE_WINDOW",
+            fechar_cadastro
+        )
 
         tk.Label(
-            janela_entrada,
+            janela_cadastro,
             text="Nova entrada",
             font=("Arial", 20, "bold")
         ).pack(pady=20)
 
         tk.Label(
-            janela_entrada,
+            janela_cadastro,
             text="Descrição:"
         ).pack()
 
         campo_descricao = tk.Entry(
-            janela_entrada,
+            janela_cadastro,
             width=35
         )
         campo_descricao.pack(pady=5)
 
         tk.Label(
-            janela_entrada,
+            janela_cadastro,
             text="Valor:"
         ).pack()
 
         campo_valor = tk.Entry(
-            janela_entrada,
+            janela_cadastro,
             width=35
         )
         campo_valor.pack(pady=5)
@@ -185,48 +251,55 @@ def iniciar_interface():
             )
 
             atualizar_interface()
-            janela_entrada.destroy()
+            janela_cadastro.destroy()
 
         botao_cadastrar = tk.Button(
-            janela_entrada,
+            janela_cadastro,
             text="Cadastrar",
             width=20,
             command=cadastrar
         )
         botao_cadastrar.pack(pady=25)
 
-        janela_entrada.bind("<Return>", lambda event: cadastrar())
+        janela_cadastro.bind("<Return>", lambda event: cadastrar())
 
     def nova_despesa():
-        janela_despesa = tk.Toplevel(janela)
-        janela_despesa.title("Nova despesa")
-        janela_despesa.geometry("400x300")
-        janela_despesa.resizable(False, False)
+        global janela_cadastro
+
+        if janela_cadastro is not None and janela_cadastro.winfo_exists():
+            janela_cadastro.lift()
+            janela_cadastro.focus_force()
+            return
+        
+        janela_cadastro = tk.Toplevel(janela)
+        janela_cadastro.title("Nova despesa")
+        janela_cadastro.geometry("400x300")
+        janela_cadastro.resizable(False, False)
 
         tk.Label(
-            janela_despesa,
+            janela_cadastro,
             text="Nova despesa",
             font=("Arial", 20, "bold")
         ).pack(pady=20)
 
         tk.Label(
-            janela_despesa,
+            janela_cadastro,
             text="Descrição:"
         ).pack()
 
         campo_descricao = tk.Entry(
-            janela_despesa,
+            janela_cadastro,
             width=35
         )
         campo_descricao.pack(pady=5)
 
         tk.Label(
-            janela_despesa,
+            janela_cadastro,
             text="Valor:"
         ).pack()
 
         campo_valor = tk.Entry(
-            janela_despesa,
+            janela_cadastro,
             width=35
         )
         campo_valor.pack(pady=5)
@@ -252,33 +325,84 @@ def iniciar_interface():
             )
             
             atualizar_interface()
-            janela_despesa.destroy()
+            janela_cadastro.destroy()
 
         botao_cadastrar = tk.Button(
-            janela_despesa,
+            janela_cadastro,
             text="Cadastrar",
             width=20,
             command=cadastrar
         )
         botao_cadastrar.pack(pady=25)
 
-        janela_despesa.bind("<Return>", lambda event: cadastrar())
+        janela_cadastro.bind("<Return>", lambda event: cadastrar())
+
+
+    botao_entrada_frame = tk.Frame(
+        frame_botoes,
+        bg="#198754",
+        padx=1,
+        pady=1
+    )
+
+    botao_entrada_frame.pack(
+        side="left",
+        padx=10
+    )
         
     tk.Button(
         frame_botoes,
         text="+ Nova entrada",
-        font=("Arial", 12, "bold"),
+        font=("Arial", 11, "bold"),
         width=18,
+        bg="#ffffff",
+        fg="#198754",
+        activebackground="#f1f8f4",
+        activeforeground="#198754",
+        relief="flat",
+        highlightbackground="#198754",
+        highlightcolor="#198754",
+        highlightthickness=1,
+        cursor="hand2",
+        padx=10,
+        pady=5,
         command=nova_entrada
-    ).pack(side="left", padx=10)
+    ).pack(
+        side="left", 
+        padx=10
+    )
+
+    botao_despesa_frame = tk.Frame(
+        frame_botoes,
+        bg="#dc3545",
+        padx=1,
+        pady=1
+    )
+
+    botao_despesa_frame.pack(
+        side="left",
+        padx=10
+    )
 
     tk.Button(
         frame_botoes,
         text="+ Nova despesa",
-        font=("Arial", 12, "bold"),
+        font=("Arial", 11, "bold"),
         width=18,
+        bg="#ffffff",
+        fg="#dc3545",
+        activebackground="#fdf1f2",
+        activeforeground="#dc3545",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=10,
+        pady=5,
         command=nova_despesa
-    ).pack(side="left", pady=10)
+    ).pack(
+        side="left", 
+        pady=10
+    )
 
     tk.Label(
         janela,
@@ -318,7 +442,6 @@ def iniciar_interface():
 
         tabela.pack()
 
-        # Define as larguras FIXAS das colunas
         for coluna, largura in enumerate(larguras):
             tabela.grid_columnconfigure(
                 coluna,
@@ -421,7 +544,7 @@ def iniciar_interface():
                 text=formatar_valor(valor),
                 font=("Arial", 9, "bold"),
                 bg="white",
-                fg="#222222",
+                fg="#198754" if tipo == "entrada" else "#dc3545",
                 anchor="e",
                 highlightbackground="#dddddd",
                 highlightthickness=1
