@@ -155,7 +155,7 @@ def buscar_movimentacoes(termo):
     cursor = conexao.cursor()
 
     cursor.execute("""
-        SELECT id, tipo, descricao, valor
+        SELECT id, tipo, descricao, valor, data
         FROM movimentacoes
         WHERE descricao LIKE ?
     """, (f"%{termo}%",))

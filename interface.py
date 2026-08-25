@@ -5,7 +5,8 @@ from banco import (
     inserir_movimentacao, 
     listar_movimentacoes,
     editar_movimentacao,
-    excluir_movimentacao
+    excluir_movimentacao,
+    buscar_movimentacoes
 )
 
 janela_cadastro = None
@@ -410,14 +411,77 @@ def iniciar_interface():
         font=("Arial", 18, "bold")
     ).pack(pady=(10, 5))
 
-    frame_movimentacoes = tk.Frame(janela)
-    frame_movimentacoes.pack()
 
-    def carregar_movimentacoes():
+    frame_pesquisa = tk.Frame(
+        janela,
+        bg="#f4f4f4"
+    )
+
+    frame_pesquisa.pack(
+        pady=(0, 10)
+    )
+
+
+    campo_busca = tk.Entry(
+        frame_pesquisa,
+        font=("Arial", 9),
+        width=35,
+        relief="flat",
+        bg="white",
+        fg="#999999",
+        insertbackground="#333333"
+    )
+
+    campo_busca.insert(0, "Buscar descrição...")
+
+    def entrar_busca(event):
+        if campo_busca.get() == "Buscar descrição...":
+            campo_busca.delete(0, tk.END)
+            campo_busca.config(fg="#333333")
+
+    def sair_busca(event):
+        if campo_busca.get() == "":
+            campo_busca.insert(0, "Buscar descrição...")
+            campo_busca.config(fg="#999999")
+
+    campo_busca.bind("<FocusIn>", entrar_busca)
+    campo_busca.bind("<FocusOut>", sair_busca)
+
+    campo_busca.pack(
+        side="left",
+        ipady=6
+    )
+
+    def pesquisar(event=None):
+        termo = campo_busca.get().strip()
+
+        if termo == "":
+            carregar_movimentacoes()
+            return
+
+        movimentacoes = buscar_movimentacoes(termo)
+
+        carregar_movimentacoes(movimentacoes)
+
+    campo_busca.bind("<Return>", pesquisar)
+
+    frame_movimentacoes = tk.Frame(
+        janela,
+        bg="#f4f4f4"
+    )
+
+    frame_movimentacoes.pack(
+        fill="x",
+        padx=20
+)
+
+
+    def carregar_movimentacoes(movimentacoes=None):
         for widget in frame_movimentacoes.winfo_children():
             widget.destroy()
 
-        movimentacoes = listar_movimentacoes()
+        if movimentacoes is None:
+            movimentacoes = listar_movimentacoes()
 
 
         largura_data = 120
@@ -574,20 +638,24 @@ def iniciar_interface():
             tk.Button(
                 frame_acoes,
                 text="Editar",
-                font=("Arial", 8),
+                font=("Arial", 8, "bold"),
                 width=7,
                 relief="flat",
-                bg="#eeeeee",
-                activebackground="#dddddd",
+                bg="#f5f5f5",
+                fg="#555555",
+                activebackground="#e9e9e9",
+                activeforeground="#333333",
+                cursor="hand2",
+                borderwidth=1,
                 command=lambda id_mov=id_mov,
-                tipo=tipo,
-                descricao=descricao,
-                valor=valor: editar_janela(
-                    id_mov,
-                    tipo,
-                    descricao,
-                    valor
-                )
+                                tipo=tipo,
+                                descricao=descricao,
+                                valor=valor:editar_janela(
+                                    id_mov,
+                                    tipo,
+                                    descricao,
+                                    valor
+                                )
             ).pack(
                 side="left",
                 padx=5,
@@ -597,11 +665,15 @@ def iniciar_interface():
             tk.Button(
                 frame_acoes,
                 text="Excluir",
-                font=("Arial", 8),
+                font=("Arial", 8, "bold"),
                 width=7,
                 relief="flat",
-                bg="#eeeeee",
-                activebackground="#dddddd",
+                bg="#fff5f5",
+                fg="#dc3545",
+                activebackground="#fde2e2",
+                activeforeground="#b02a37",
+                borderwidth=0,
+                cursor="hand2",
                 command=lambda id_mov=id_mov: excluir(id_mov)
             ).pack(
                 side="left",
