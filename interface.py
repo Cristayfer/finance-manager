@@ -6,7 +6,8 @@ from banco import (
     listar_movimentacoes,
     editar_movimentacao,
     excluir_movimentacao,
-    buscar_movimentacoes
+    buscar_movimentacoes,
+    resumo_financeiro
 )
 
 janela_cadastro = None
@@ -21,6 +22,7 @@ def iniciar_interface():
     janela.resizable(False, False)
 
     total_entradas, total_despesas, saldo = calcular_saldo()
+    total_movimentacoes, quantidade_entradas, quantidade_despesas = resumo_financeiro()
 
     def formatar_valor(valor):
         return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -41,7 +43,7 @@ def iniciar_interface():
         width=250,
         height=150,
         bg="#ffffff",
-        highlightbackground="#dddddd",
+        highlightbackground="#e5e5e5",
         highlightthickness=1,
     )
 
@@ -55,13 +57,13 @@ def iniciar_interface():
     tk.Label(
         cartao_saldo,
         text="Saldo atual",
-        font=("Arial", 11),
+        font=("Arial", 9, "bold"),
         bg="#ffffff",
-        fg="#666666"
+        fg="#777777"
     ).pack(
         anchor="w",
         padx=20,
-        pady=(20, 5)
+        pady=(20, 4)
     )
 
     label_saldo = tk.Label(
@@ -74,6 +76,17 @@ def iniciar_interface():
     label_saldo.pack(
         anchor="w",
         padx=20
+    )
+    tk.Label(
+        cartao_saldo,
+        text="Disponivel",
+        font=("Arial", 9),
+        bg="#ffffff",
+        fg="#999999"
+    ).pack(
+        anchor="w",
+        padx=20,
+        pady=(3, 0)
     )
 
 
@@ -116,7 +129,18 @@ def iniciar_interface():
         anchor="w",
         padx=20
     )
-
+    label_quantidade_entradas = tk.Label(
+        cartao_entradas,
+        text=f"{quantidade_entradas} entradas registradas",
+        font=("Arial", 9),
+        bg="#ffffff",
+        fg="#999999"
+    )
+    label_quantidade_entradas.pack(
+        anchor="w",
+        padx=20,
+        pady=(3, 0)
+    )
 
     cartao_despesas = tk.Frame(
         frame_cartoes,
@@ -157,9 +181,23 @@ def iniciar_interface():
         anchor="w",
         padx=20
     )
+    label_quantidade_despesas = tk.Label(
+    cartao_despesas,
+    text=f"{quantidade_despesas} despesas registradas",
+    font=("Arial", 9),
+    bg="#ffffff",
+    fg="#999999"
+    )
+    label_quantidade_despesas.pack(
+        anchor="w",
+        padx=20,
+        pady=(3, 0)
+    )
 
     def atualizar_interface():
         total_entradas, total_despesas, saldo = calcular_saldo()
+
+        total_movimentacoes, quantidade_entradas, quantidade_despesas = resumo_financeiro()
 
         label_saldo.config(
             text=formatar_valor(saldo)
@@ -171,6 +209,14 @@ def iniciar_interface():
 
         label_despesas.config(
             text=formatar_valor(total_despesas)
+        )
+
+        label_quantidade_entradas.config(
+            text=f"{quantidade_entradas} entradas registradas"
+        )
+
+        label_quantidade_despesas.config(
+            text=f"{quantidade_despesas} despesas registradas"
         )
 
         carregar_movimentacoes()
@@ -452,6 +498,45 @@ def iniciar_interface():
         ipady=6
     )
 
+    def limpar_busca():
+        campo_busca.delete(0, tk.END)
+
+        campo_busca.insert(
+            0,
+            "Buscar descrição..."
+        )
+
+        campo_busca.config(
+            fg="#999999"
+        )
+
+        campo_busca.focus()
+
+        carregar_movimentacoes()
+
+    botao_limpar = tk.Button(
+        frame_pesquisa,
+        text="Limpar",
+        font=("Arial", 9, "bold"),
+        bg="#f5f5f5",
+        fg="#555555",
+        activebackground="#e9e9e9",
+        activeforeground="#333333",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=12,
+        pady=5,
+        command=limpar_busca
+    )
+
+    botao_limpar.pack(
+        side="left",
+        padx=(8, 0)
+    )
+
+    
+
     def pesquisar(event=None):
         termo = campo_busca.get().strip()
 
@@ -682,14 +767,97 @@ def iniciar_interface():
             )
 
     def excluir(id_movimentacao):
-        resposta = messagebox.askquestion(
-            "Confirmar exclusão",
-            "Deseja realmente excluir esta movimentação?"
+        janela_exclusao = tk.Toplevel(janela)
+
+        janela_exclusao.title("Confirmar exclusão?")
+        janela_exclusao.geometry("360x200")
+        janela_exclusao.resizable(False, False)
+        janela_exclusao.configure(bg="white")
+
+        janela_exclusao.transient(janela)
+        janela_exclusao.grab_set()
+
+        janela_exclusao.update_idletasks()
+
+        largura = janela_exclusao.winfo_width()
+        altura = janela_exclusao.winfo_height()
+
+        pos_x = janela.winfo_x() + (janela.winfo_width() - largura) // 2
+        pos_y = janela.winfo_y() + (janela.winfo_height() - altura) // 2
+
+        janela_exclusao.geometry(
+            f"{largura}x{altura}+{pos_x}+{pos_y}"
+        ) 
+
+        tk.Label(
+            janela_exclusao,
+            text="Excluir movimentação?",
+            font=("Arial", 13, "bold"),
+            bg="white",
+            fg="#222222"
+        ).pack(
+            pady=(25, 8)
         )
 
-        if resposta:
+        tk.Label(
+            janela_exclusao,
+            text="Esta ação não poderá ser desfeita.",
+            font=("Arial", 9),
+            bg="white",
+            fg="#777777"
+        ).pack()
+
+        frame_botoes_exclusao = tk.Frame(
+            janela_exclusao,
+            bg="white"
+        )
+
+        frame_botoes_exclusao.pack(
+            pady=25
+        )
+
+        def confirmar_exclusao():
             excluir_movimentacao(id_movimentacao)
+            janela_exclusao.destroy()
             atualizar_interface()
+
+        tk.Button(
+            frame_botoes_exclusao,
+            text="Cancelar",
+            font=("Arial", 9, "bold"),
+            bg="#f5f5f5",
+            fg="#555555",
+            activebackground="#e9e9e9",
+            activeforeground="#333333",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=15,
+            pady=7,
+            command=janela_exclusao.destroy
+        ).pack(
+            side="left",
+            padx=5
+        )
+
+        tk.Button(
+            frame_botoes_exclusao,
+            text="Excluir",
+            font=("Arial", 9, "bold"),
+            bg="#fff5f5",
+            fg="#dc3545",
+            activebackground="#fde2e2",
+            activeforeground="#b02a37",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=15,
+            pady=7,
+            command=confirmar_exclusao
+        ).pack(
+            side="left",
+            padx=5
+        )
 
 
     def editar_janela(id_mov, tipo, descricao, valor):
