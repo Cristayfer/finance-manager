@@ -235,8 +235,12 @@ def iniciar_interface():
         
         janela_cadastro = tk.Toplevel(janela)
         janela_cadastro.title("Nova entrada")
-        janela_cadastro.geometry("400x300")
+        janela_cadastro.geometry("426x360")
         janela_cadastro.resizable(False, False)
+        janela_cadastro.configure(bg="#f4f4f4")
+
+        janela_cadastro.transient(janela)
+        janela_cadastro.grab_set()
 
         def fechar_cadastro():
             global janela_cadastro
@@ -249,33 +253,109 @@ def iniciar_interface():
             fechar_cadastro
         )
 
-        tk.Label(
+        frame_cabecalho = tk.Frame(
             janela_cadastro,
-            text="Nova entrada",
-            font=("Arial", 20, "bold")
-        ).pack(pady=20)
+            bg="#f4f4f4"
+        )
+
+        frame_cabecalho.pack(
+            fill="x",
+            padx=30,
+            pady=(25, 15)
+        )
 
         tk.Label(
+            frame_cabecalho,
+            text="Nova entrada",
+            font=("Arial", 18, "bold"),
+            bg="#f4f4f4",
+            fg="#222222"
+        ).pack(
+            anchor="w"
+        )
+
+        tk.Label(
+            frame_cabecalho,
+            text="Adicione uma nova movimentação",
+            font=("Arial", 9),
+            bg="#f4f4f4",
+            fg="#777777"
+        ).pack(
+            anchor="w",
+            pady=(3, 0)
+        )
+
+        frame_descricao = tk.Frame(
             janela_cadastro,
-            text="Descrição:"
-        ).pack()
+            bg="#f4f4f4"
+        )
+
+        frame_descricao.pack(
+            fill="x",
+            padx=30,
+            pady=5
+        )
+
+        tk.Label(
+            frame_descricao,
+            text="DESCRIÇÃO",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
 
         campo_descricao = tk.Entry(
-            janela_cadastro,
-            width=35
+            frame_descricao,
+            font=("Arial", 10),
+            relief="flat",
+            bg="white",
+            fg="#333333",
+            insertbackground="#333333"
         )
-        campo_descricao.pack(pady=5)
+
+        campo_descricao.pack(
+            fill="x",
+            ipady=8
+        )
+
+        frame_valor = tk.Frame(
+            janela_cadastro,
+            bg="#f4f4f4"
+        )
+
+        frame_valor.pack(
+            fill="x",
+            padx=30,
+            pady=10
+        )
 
         tk.Label(
-            janela_cadastro,
-            text="Valor:"
-        ).pack()
+            frame_valor,
+            text="VALOR",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
 
         campo_valor = tk.Entry(
-            janela_cadastro,
-            width=35
+            frame_valor,
+            font=("Arial", 10),
+            relief="flat",
+            bg="white",
+            fg="#333333",
+            insertbackground="#333333"
         )
-        campo_valor.pack(pady=5)
+
+        campo_valor.pack(
+            fill="x",
+            ipady=8
+        )
 
         def cadastrar():
             descricao = campo_descricao.get()
@@ -303,10 +383,21 @@ def iniciar_interface():
         botao_cadastrar = tk.Button(
             janela_cadastro,
             text="Cadastrar",
-            width=20,
+            font=("Arial", 9, "bold"),
+            bg="#e8f5ee",
+            fg="#198754",
+            activebackground="#d8f0e2",
+            activeforeground="#146c43",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=20,
+            pady=8,
             command=cadastrar
         )
-        botao_cadastrar.pack(pady=25)
+        botao_cadastrar.pack(
+            pady=(15, 20)
+        )
 
         janela_cadastro.bind("<Return>", lambda event: cadastrar())
 
@@ -320,36 +411,116 @@ def iniciar_interface():
         
         janela_cadastro = tk.Toplevel(janela)
         janela_cadastro.title("Nova despesa")
-        janela_cadastro.geometry("400x300")
+        janela_cadastro.geometry("420x360")
         janela_cadastro.resizable(False, False)
+        janela_cadastro.configure(bg="#f4f4f4")
+
+        janela_cadastro.transient(janela)
+        janela_cadastro.grab_set()
+
+        frame_cabecalho = tk.Frame(
+            janela_cadastro,
+            bg="#f4f4f4"
+        )
+
+        frame_cabecalho.pack(
+            fill="x",
+            padx=30,
+            pady=(25, 15)
+        )
 
         tk.Label(
-            janela_cadastro,
+            frame_cabecalho,
             text="Nova despesa",
-            font=("Arial", 20, "bold")
-        ).pack(pady=20)
+            font=("Arial", 18, "bold"),
+            bg="#f4f4f4",
+            fg="#222222"
+        ).pack(
+            anchor="w"
+        )
 
         tk.Label(
+            frame_cabecalho,
+            text="Adicione uma nova movimentação",
+            font=("Arial", 9),
+            bg="#f4f4f4",
+            fg="#777777"
+        ).pack(
+            anchor="w",
+            pady=(3, 0)
+        )
+
+        frame_descricao = tk.Frame(
             janela_cadastro,
-            text="Descrição:"
-        ).pack()
+            bg="#f4f4f4"
+        )
+
+        frame_descricao.pack(
+            fill="x",
+            padx=30,
+            pady=5
+        )
+
+        tk.Label(
+            frame_descricao,
+            text="DESCRIÇÃO",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
 
         campo_descricao = tk.Entry(
-            janela_cadastro,
-            width=35
+            frame_descricao,
+            font=("Arial", 10),
+            relief="flat",
+            bg="white",
+            fg="#333333",
+            insertbackground="#333333"
         )
-        campo_descricao.pack(pady=5)
+
+        campo_descricao.pack(
+            fill="x",
+            ipady=8
+        )
+
+        frame_valor = tk.Frame(
+            janela_cadastro,
+            bg="#f4f4f4"
+        )
+
+        frame_valor.pack(
+            fill="x",
+            padx=30,
+            pady=10
+        )
 
         tk.Label(
-            janela_cadastro,
-            text="Valor:"
-        ).pack()
+            frame_valor,
+            text="VALOR",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
 
         campo_valor = tk.Entry(
-            janela_cadastro,
-            width=35
+            frame_valor,
+            font=("Arial", 10),
+            relief="flat",
+            bg="white",
+            fg="#333333",
+            insertbackground="#333333"
         )
-        campo_valor.pack(pady=5)
+
+        campo_valor.pack(
+            fill="x",
+            ipady=8
+        )
 
         def cadastrar():
             descricao = campo_descricao.get()
@@ -377,10 +548,21 @@ def iniciar_interface():
         botao_cadastrar = tk.Button(
             janela_cadastro,
             text="Cadastrar",
-            width=20,
+            font=("Arial", 9, "bold"),
+            bg="#fdecec",
+            fg="#dc3545",
+            activebackground="#f9dada",
+            activeforeground="#b02a37",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=20,
+            pady=8,
             command=cadastrar
         )
-        botao_cadastrar.pack(pady=25)
+        botao_cadastrar.pack(
+            pady=(15, 20)
+        )
 
         janela_cadastro.bind("<Return>", lambda event: cadastrar())
 
