@@ -225,6 +225,24 @@ def iniciar_interface():
     frame_botoes = tk.Frame(janela)
     frame_botoes.pack(pady=30)
 
+    def centralizar_janela(janela_secundaria):
+        janela_secundaria.update_idletasks()
+
+        largura = janela_secundaria.winfo_width()
+        altura = janela_secundaria.winfo_height()
+
+        pos_x = janela.winfo_x() + (
+        janela.winfo_width() - largura
+        ) // 2
+
+        pos_y = janela.winfo_y() + (
+        janela.winfo_height() - altura
+        ) // 2
+
+        janela_secundaria.geometry(
+        f"{largura}x{altura}+{pos_x}+{pos_y}"
+        )
+
     def nova_entrada():
         global janela_cadastro
 
@@ -241,6 +259,8 @@ def iniciar_interface():
 
         janela_cadastro.transient(janela)
         janela_cadastro.grab_set()
+
+        centralizar_janela(janela_cadastro)
 
         def fechar_cadastro():
             global janela_cadastro
@@ -417,6 +437,8 @@ def iniciar_interface():
 
         janela_cadastro.transient(janela)
         janela_cadastro.grab_set()
+
+        centralizar_janela(janela_cadastro)
 
         frame_cabecalho = tk.Frame(
             janela_cadastro,
@@ -1046,40 +1068,128 @@ def iniciar_interface():
 
         janela_edicao = tk.Toplevel(janela)
         janela_edicao.title("Editar movimentação")
-        janela_edicao.geometry("400x350")
+        janela_edicao.geometry("420x360")
         janela_edicao.resizable(False, False)
+        janela_edicao.configure(bg="#f4f4f4")
+
+        janela_edicao.transient(janela),
+        janela_edicao.grab_set()
+
+        centralizar_janela(janela_edicao)
+
+        frame_cabecalho = tk.Frame(
+        janela_edicao,
+        bg="#f4f4f4"
+        )
+
+        frame_cabecalho.pack(
+        fill="x",
+        padx=30,
+        pady=(25, 15)
+        )
 
         tk.Label(
-            janela_edicao,
-            text="Editar movimentação",
-            font=("Arial", 20, "bold")
-        ).pack(pady=20)
+        frame_cabecalho,
+        text="Editar movimentação",
+        font=("Arial", 18, "bold"),
+        bg="#f4f4f4",
+        fg="#222222"
+        ).pack(
+        anchor="w"
+        )
 
         tk.Label(
-            janela_edicao,
-            text="Descrição:"
-        ).pack()
+        frame_cabecalho,
+        text="Altere os dados da movimentação",
+        font=("Arial", 9),
+        bg="#f4f4f4",
+        fg="#777777"
+        ).pack(
+        anchor="w",
+        pady=(3, 0)
+        )
+
+        frame_descricao = tk.Frame(
+        janela_edicao,
+        bg="#f4f4f4"
+        )
+
+        frame_descricao.pack(
+        fill="x",
+        padx=30,
+        pady=5
+        )
+
+        tk.Label(
+        frame_descricao,
+        text="DESCRIÇÃO",
+        font=("Arial", 9, "bold"),
+        bg="#f4f4f4",
+        fg="#555555"
+        ).pack(
+        anchor="w",
+        pady=(0, 5)
+        )
 
         campo_descricao = tk.Entry(
-            janela_edicao,
-            width=35
+        frame_descricao,
+        font=("Arial", 10),
+        relief="flat",
+        bg="white",
+        fg="#333333",
+        insertbackground="#333333"
         )
-        campo_descricao.pack(pady=5)
 
-        campo_descricao.insert(0, descricao)
+        campo_descricao.pack(
+            fill="x",
+            ipady=8
+        )
+
+        campo_descricao.insert(
+            0,
+            descricao
+        )
+
+        frame_valor = tk.Frame(
+        janela_edicao,
+        bg="#f4f4f4"
+        )
+
+        frame_valor.pack(
+            fill="x",
+            padx=30,
+            pady=10
+        )
 
         tk.Label(
-            janela_edicao,
-            text="Valor:"
-        ).pack()
+            frame_valor,
+            text="VALOR",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
 
         campo_valor = tk.Entry(
-            janela_edicao,
-            width=35
+            frame_valor,
+            font=("Arial", 10),
+            relief="flat",
+            bg="white",
+            fg="#333333",
+            insertbackground="#333333"
         )
-        campo_valor.pack(pady=5)
 
-        campo_valor.insert(0, str(valor).replace(".", ","))
+        campo_valor.pack(
+            fill="x",
+            ipady=8
+        )
+
+        campo_valor.insert(
+            0,
+            str(valor).replace(".", ",")
+        )
 
         def salvar():
 
@@ -1107,12 +1217,25 @@ def iniciar_interface():
 
             atualizar_interface()
 
-        tk.Button(
-            janela_edicao,
-            text="Salvar",
-            width=20,
-            command=salvar
-        ).pack(pady=25)
+        botao_salvar = tk.Button(
+        janela_edicao,
+        text="Salvar alterações",
+        font=("Arial", 9, "bold"),
+        bg="#e8f5ee",
+        fg="#198754",
+        activebackground="#d8f0e2",
+        activeforeground="#146c43",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=20,
+        pady=8,
+        command=salvar
+        )
+
+        botao_salvar.pack(
+        pady=(15, 20)
+        )
 
         janela_edicao.bind(
             "<Return>",
