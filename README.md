@@ -18,12 +18,12 @@ Um projeto simples de controle financeiro desenvolvido em python e sqlite.
 - Calcular saldo total
 - Excluir movimentações
 - Editar movimentações
+- Adicionar data as movimentações
+- Melhorar a interface
+- Filtrar movimentações
 
 ## 📅 Próximas implementações
 
-- Adicionar data as movimentações
 - Criar categorias
-- Filtrar movimentações
-- Melhorar a interface
 - Criar relatórios financeiros
 - Possível versão web
