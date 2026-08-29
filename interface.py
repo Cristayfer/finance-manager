@@ -66,6 +66,27 @@ def iniciar_interface():
         pady=(20, 4)
     )
 
+    cor_saldo = (
+        "#198754"
+        if saldo > 0
+        else "#dc3545"
+        if saldo < 0
+        else "#777777"
+    )
+
+    barra_saldo = tk.Frame(
+    cartao_saldo,
+    bg=cor_saldo,
+    width=5
+    )
+
+    barra_saldo.place(
+    x=0,
+    y=0,
+    relheight=1,
+    width=5
+    )
+
     label_saldo = tk.Label(
         cartao_saldo,
         text=formatar_valor(saldo),
@@ -182,11 +203,11 @@ def iniciar_interface():
         padx=20
     )
     label_quantidade_despesas = tk.Label(
-    cartao_despesas,
-    text=f"{quantidade_despesas} despesas registradas",
-    font=("Arial", 9),
-    bg="#ffffff",
-    fg="#999999"
+        cartao_despesas,
+        text=f"{quantidade_despesas} despesas registradas",
+        font=("Arial", 9),
+        bg="#ffffff",
+        fg="#999999"
     )
     label_quantidade_despesas.pack(
         anchor="w",
@@ -199,8 +220,22 @@ def iniciar_interface():
 
         total_movimentacoes, quantidade_entradas, quantidade_despesas = resumo_financeiro()
 
+
+        cor_saldo = (
+        "#198754"
+        if saldo > 0
+        else "#dc3545"
+        if saldo < 0
+        else "#777777"
+        )
+
         label_saldo.config(
-            text=formatar_valor(saldo)
+        text=formatar_valor(saldo),
+        fg="#222222"
+        )
+
+        barra_saldo.config(
+        bg=cor_saldo
         )
 
         label_entradas.config(
