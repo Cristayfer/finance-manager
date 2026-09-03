@@ -288,7 +288,7 @@ def iniciar_interface():
         
         janela_cadastro = tk.Toplevel(janela)
         janela_cadastro.title("Nova entrada")
-        janela_cadastro.geometry("426x360")
+        janela_cadastro.geometry("426x400")
         janela_cadastro.resizable(False, False)
         janela_cadastro.configure(bg="#f4f4f4")
 
@@ -413,10 +413,25 @@ def iniciar_interface():
         )
 
         def cadastrar():
-            descricao = campo_descricao.get()
-            valor = campo_valor.get()
+            descricao = campo_descricao.get().strip()
+            valor = campo_valor.get().strip()
 
-            if descricao == "" or valor == "":
+            if descricao == "":
+                messagebox.showwarning(
+                    "Campo obrigatório",
+                    "Informe uma descrição para a entrada.",
+                    parent=janela_cadastro
+                )
+                campo_descricao.focus()
+                return
+
+            if valor == "":
+                messagebox.showwarning(
+                    "Campo obrigatório",
+                    "Informe um valor para a entrada.",
+                    parent=janela_cadastro
+                )
+                campo_valor.focus()
                 return
 
             valor = valor.replace(",", ".")
@@ -424,6 +439,21 @@ def iniciar_interface():
             try:
                 valor = float(valor)
             except ValueError:
+                messagebox.showwarning(
+                    "Valor inválido",
+                    "Informe um valor válido.\nExemplo: 50 ou 50,50.",
+                    parent=janela_cadastro
+                )
+                campo_valor.focus()
+                return
+
+            if valor <= 0:
+                messagebox.showwarning(
+                    "Valor inválido",
+                    "O valor deve ser maior que zero.",
+                    parent=janela_cadastro
+                )
+                campo_valor.focus()
                 return
 
             inserir_movimentacao(
@@ -433,10 +463,20 @@ def iniciar_interface():
             )
 
             atualizar_interface()
-            janela_cadastro.destroy()
+            fechar_cadastro()
+
+
+        frame_botoes_cadastro = tk.Frame(
+            janela_cadastro,
+            bg="#f4f4f4"
+        )
+
+        frame_botoes_cadastro.pack(
+            pady=(15, 20)
+        )
 
         botao_cadastrar = tk.Button(
-            janela_cadastro,
+            frame_botoes_cadastro,
             text="Cadastrar",
             font=("Arial", 9, "bold"),
             bg="#e8f5ee",
@@ -451,7 +491,29 @@ def iniciar_interface():
             command=cadastrar
         )
         botao_cadastrar.pack(
+            side="left",
             pady=(15, 20)
+        )
+
+        botao_cancelar = tk.Button(
+        frame_botoes_cadastro,
+        text="Cancelar",
+        font=("Arial", 9, "bold"),
+        bg="#f5f5f5",
+        fg="#555555",
+        activebackground="#e9e9e9",
+        activeforeground="#333333",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=20,
+        pady=8,
+        command=fechar_cadastro
+        )
+
+        botao_cancelar.pack(
+        side="right",
+        padx=5
         )
 
         janela_cadastro.bind("<Return>", lambda event: cadastrar())
@@ -466,7 +528,7 @@ def iniciar_interface():
         
         janela_cadastro = tk.Toplevel(janela)
         janela_cadastro.title("Nova despesa")
-        janela_cadastro.geometry("420x360")
+        janela_cadastro.geometry("420x400")
         janela_cadastro.resizable(False, False)
         janela_cadastro.configure(bg="#f4f4f4")
 
@@ -474,6 +536,12 @@ def iniciar_interface():
         janela_cadastro.grab_set()
 
         centralizar_janela(janela_cadastro)
+
+        def fechar_cadastro():
+            global janela_cadastro
+
+            janela_cadastro.destroy()
+            janela_cadastro = None
 
         frame_cabecalho = tk.Frame(
             janela_cadastro,
@@ -580,10 +648,25 @@ def iniciar_interface():
         )
 
         def cadastrar():
-            descricao = campo_descricao.get()
-            valor = campo_valor.get()
+            descricao = campo_descricao.get().strip()
+            valor = campo_valor.get().strip()
 
-            if descricao == "" or valor == "":
+            if descricao == "":
+                messagebox.showwarning(
+                    "Campo obrigatório",
+                    "Informe uma descrição para a despesa.",
+                    parent=janela_cadastro
+                )
+                campo_descricao.focus()
+                return
+
+            if valor == "":
+                messagebox.showwarning(
+                    "Campo obrigatório",
+                    "Informe um valor para a despesa.",
+                    parent=janela_cadastro
+                )
+                campo_valor.focus()
                 return
 
             valor = valor.replace(",", ".")
@@ -591,6 +674,21 @@ def iniciar_interface():
             try:
                 valor = float(valor)
             except ValueError:
+                messagebox.showwarning(
+                    "Valor inválido",
+                    "Informe um valor válido.\nExemplo: 50 ou 50,50.",
+                    parent=janela_cadastro
+                )
+                campo_valor.focus()
+                return
+
+            if valor <= 0:
+                messagebox.showwarning(
+                    "Valor inválido",
+                    "O valor deve ser maior que zero.",
+                    parent=janela_cadastro
+                )
+                campo_valor.focus()
                 return
 
             inserir_movimentacao(
@@ -598,28 +696,60 @@ def iniciar_interface():
                 descricao,
                 valor
             )
-            
-            atualizar_interface()
-            janela_cadastro.destroy()
 
-        botao_cadastrar = tk.Button(
+            atualizar_interface()
+            fechar_cadastro()
+
+
+        frame_botoes_cadastro = tk.Frame(
             janela_cadastro,
-            text="Cadastrar",
+            bg="#f4f4f4"
+        )
+
+        frame_botoes_cadastro.pack(
+            pady=(15, 20)
+        )    
+        
+        botao_cadastrar = tk.Button(
+        frame_botoes_cadastro,
+        text="Cadastrar",
+        font=("Arial", 9, "bold"),
+        bg="#fdecec",
+        fg="#dc3545",
+        activebackground="#f9dada",
+        activeforeground="#b02a37",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=20,
+        pady=8,
+        command=cadastrar
+        )
+
+        botao_cadastrar.pack(
+            side="left",
+            padx=5
+        )
+        botao_cancelar = tk.Button(
+            frame_botoes_cadastro,
+            text="Cancelar",
             font=("Arial", 9, "bold"),
-            bg="#fdecec",
-            fg="#dc3545",
-            activebackground="#f9dada",
-            activeforeground="#b02a37",
+            bg="#f5f5f5",
+            fg="#555555",
+            activebackground="#e9e9e9",
+            activeforeground="#333333",
             relief="flat",
             borderwidth=0,
             cursor="hand2",
             padx=20,
             pady=8,
-            command=cadastrar
+            command=fechar_cadastro
         )
-        botao_cadastrar.pack(
-            pady=(15, 20)
+        botao_cancelar.pack(
+            side="left",
+            padx=5
         )
+        
 
         janela_cadastro.bind("<Return>", lambda event: cadastrar())
 
@@ -1103,7 +1233,7 @@ def iniciar_interface():
 
         janela_edicao = tk.Toplevel(janela)
         janela_edicao.title("Editar movimentação")
-        janela_edicao.geometry("420x360")
+        janela_edicao.geometry("420x400")
         janela_edicao.resizable(False, False)
         janela_edicao.configure(bg="#f4f4f4")
 
@@ -1228,17 +1358,48 @@ def iniciar_interface():
 
         def salvar():
 
-            nova_descricao = campo_descricao.get()
-            novo_valor = campo_valor.get()
+            nova_descricao = campo_descricao.get().strip()
+            novo_valor = campo_valor.get().strip()
 
-            if nova_descricao == "" or novo_valor == "":
+            if nova_descricao == "":
+                messagebox.showwarning(
+                    "Campo obrigatório",
+                    "Informe uma descrição.",
+                    parent=janela_edicao
+                )
+                campo_descricao.focus()
+                return
+
+            if novo_valor == "":
+                messagebox.showwarning(
+                    "Campo obrigatório",
+                    "Informe um valor.",
+                    parent=janela_edicao
+                )
+                campo_valor.focus()
                 return
 
             novo_valor = novo_valor.replace(",", ".")
 
             try:
                 novo_valor = float(novo_valor)
+
             except ValueError:
+                messagebox.showwarning(
+                    "Valor inválido",
+                    "Informe um valor válido.\nExemplo: 50 ou 50,50.",
+                    parent=janela_edicao
+                )
+                campo_valor.focus()
+                return
+
+            if novo_valor <= 0:
+                messagebox.showwarning(
+                    "Valor inválido",
+                    "O valor deve ser maior que zero.",
+                    parent=janela_edicao
+                )
+                campo_valor.focus()
                 return
 
             editar_movimentacao(
@@ -1252,8 +1413,17 @@ def iniciar_interface():
 
             atualizar_interface()
 
-        botao_salvar = tk.Button(
+        frame_botoes_edicao = tk.Frame(
         janela_edicao,
+        bg="#f4f4f4"
+        )
+
+        frame_botoes_edicao.pack(
+        pady=(15, 20)
+        )
+
+        botao_salvar = tk.Button(
+        frame_botoes_edicao,
         text="Salvar alterações",
         font=("Arial", 9, "bold"),
         bg="#e8f5ee",
@@ -1268,8 +1438,30 @@ def iniciar_interface():
         command=salvar
         )
 
+        botao_cancelar = tk.Button(
+        frame_botoes_edicao,
+        text="Cancelar",
+        font=("Arial", 9, "bold"),
+        bg="#f5f5f5",
+        fg="#555555",
+        activebackground="#e9e9e9",
+        activeforeground="#333333",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=20,
+        pady=8,
+        command=janela_edicao.destroy
+        )
+
+        botao_cancelar.pack(
+        side="right",
+        padx=5
+        )
+
         botao_salvar.pack(
-        pady=(15, 20)
+        side="left",
+        padx=5
         )
 
         janela_edicao.bind(
