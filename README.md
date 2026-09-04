@@ -19,8 +19,8 @@ Um projeto simples de controle financeiro desenvolvido em python e sqlite.
 - Excluir movimentações
 - Editar movimentações
 - Adicionar data as movimentações
-- Melhorar a interface
 - Filtrar movimentações
+- Interface moderna
 
 ## 📅 Próximas implementações
 

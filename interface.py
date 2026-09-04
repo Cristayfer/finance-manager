@@ -75,16 +75,16 @@ def iniciar_interface():
     )
 
     barra_saldo = tk.Frame(
-    cartao_saldo,
-    bg=cor_saldo,
-    width=5
+        cartao_saldo,
+        bg=cor_saldo,
+        width=5
     )
 
     barra_saldo.place(
-    x=0,
-    y=0,
-    relheight=1,
-    width=5
+        x=0,
+        y=0,
+        relheight=1,
+        width=5
     )
 
     label_saldo = tk.Label(
@@ -222,20 +222,20 @@ def iniciar_interface():
 
 
         cor_saldo = (
-        "#198754"
-        if saldo > 0
-        else "#dc3545"
-        if saldo < 0
-        else "#777777"
+            "#198754"
+            if saldo > 0
+            else "#dc3545"
+            if saldo < 0
+            else "#777777"
         )
 
         label_saldo.config(
-        text=formatar_valor(saldo),
-        fg="#222222"
+            text=formatar_valor(saldo),
+            fg="#222222"
         )
 
         barra_saldo.config(
-        bg=cor_saldo
+            
         )
 
         label_entradas.config(
@@ -496,24 +496,24 @@ def iniciar_interface():
         )
 
         botao_cancelar = tk.Button(
-        frame_botoes_cadastro,
-        text="Cancelar",
-        font=("Arial", 9, "bold"),
-        bg="#f5f5f5",
-        fg="#555555",
-        activebackground="#e9e9e9",
-        activeforeground="#333333",
-        relief="flat",
-        borderwidth=0,
-        cursor="hand2",
-        padx=20,
-        pady=8,
-        command=fechar_cadastro
+            frame_botoes_cadastro,
+            text="Cancelar",
+            font=("Arial", 9, "bold"),
+            bg="#f5f5f5",
+            fg="#555555",
+            activebackground="#e9e9e9",
+            activeforeground="#333333",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=20,
+            pady=8,
+            command=fechar_cadastro
         )
 
         botao_cancelar.pack(
-        side="right",
-        padx=5
+            side="right",
+            padx=5
         )
 
         janela_cadastro.bind("<Return>", lambda event: cadastrar())
@@ -711,19 +711,19 @@ def iniciar_interface():
         )    
         
         botao_cadastrar = tk.Button(
-        frame_botoes_cadastro,
-        text="Cadastrar",
-        font=("Arial", 9, "bold"),
-        bg="#fdecec",
-        fg="#dc3545",
-        activebackground="#f9dada",
-        activeforeground="#b02a37",
-        relief="flat",
-        borderwidth=0,
-        cursor="hand2",
-        padx=20,
-        pady=8,
-        command=cadastrar
+            frame_botoes_cadastro,
+            text="Cadastrar",
+            font=("Arial", 9, "bold"),
+            bg="#fdecec",
+            fg="#dc3545",
+            activebackground="#f9dada",
+            activeforeground="#b02a37",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=20,
+            pady=8,
+            command=cadastrar
         )
 
         botao_cadastrar.pack(
@@ -904,7 +904,6 @@ def iniciar_interface():
         padx=(8, 0)
     )
 
-    
 
     def pesquisar(event=None):
         termo = campo_busca.get().strip()
@@ -1243,66 +1242,66 @@ def iniciar_interface():
         centralizar_janela(janela_edicao)
 
         frame_cabecalho = tk.Frame(
-        janela_edicao,
-        bg="#f4f4f4"
+            janela_edicao,
+            bg="#f4f4f4"
         )
 
         frame_cabecalho.pack(
-        fill="x",
-        padx=30,
-        pady=(25, 15)
+            fill="x",
+            padx=30,
+            pady=(25, 15)
         )
 
         tk.Label(
-        frame_cabecalho,
-        text="Editar movimentação",
-        font=("Arial", 18, "bold"),
-        bg="#f4f4f4",
-        fg="#222222"
+            frame_cabecalho,
+            text="Editar movimentação",
+            font=("Arial", 18, "bold"),
+            bg="#f4f4f4",
+            fg="#222222"
         ).pack(
-        anchor="w"
+            anchor="w"
         )
 
         tk.Label(
-        frame_cabecalho,
-        text="Altere os dados da movimentação",
-        font=("Arial", 9),
-        bg="#f4f4f4",
-        fg="#777777"
+            frame_cabecalho,
+            text="Altere os dados da movimentação",
+            font=("Arial", 9),
+            bg="#f4f4f4",
+            fg="#777777"
         ).pack(
-        anchor="w",
-        pady=(3, 0)
+            anchor="w",
+            pady=(3, 0)
         )
 
         frame_descricao = tk.Frame(
-        janela_edicao,
-        bg="#f4f4f4"
+            janela_edicao,
+            bg="#f4f4f4"
         )
 
         frame_descricao.pack(
-        fill="x",
-        padx=30,
-        pady=5
+            fill="x",
+            padx=30,
+            pady=5
         )
 
         tk.Label(
-        frame_descricao,
-        text="DESCRIÇÃO",
-        font=("Arial", 9, "bold"),
-        bg="#f4f4f4",
-        fg="#555555"
+            frame_descricao,
+            text="DESCRIÇÃO",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
         ).pack(
-        anchor="w",
-        pady=(0, 5)
+            anchor="w",
+            pady=(0, 5)
         )
 
         campo_descricao = tk.Entry(
-        frame_descricao,
-        font=("Arial", 10),
-        relief="flat",
-        bg="white",
-        fg="#333333",
-        insertbackground="#333333"
+            frame_descricao,
+            font=("Arial", 10),
+            relief="flat",
+            bg="white",
+            fg="#333333",
+            insertbackground="#333333"
         )
 
         campo_descricao.pack(
@@ -1316,8 +1315,8 @@ def iniciar_interface():
         )
 
         frame_valor = tk.Frame(
-        janela_edicao,
-        bg="#f4f4f4"
+            janela_edicao,
+            bg="#f4f4f4"
         )
 
         frame_valor.pack(
@@ -1414,54 +1413,54 @@ def iniciar_interface():
             atualizar_interface()
 
         frame_botoes_edicao = tk.Frame(
-        janela_edicao,
-        bg="#f4f4f4"
+            janela_edicao,
+            bg="#f4f4f4"
         )
 
         frame_botoes_edicao.pack(
-        pady=(15, 20)
+          pady=(15, 20)
         )
 
         botao_salvar = tk.Button(
-        frame_botoes_edicao,
-        text="Salvar alterações",
-        font=("Arial", 9, "bold"),
-        bg="#e8f5ee",
-        fg="#198754",
-        activebackground="#d8f0e2",
-        activeforeground="#146c43",
-        relief="flat",
-        borderwidth=0,
-        cursor="hand2",
-        padx=20,
-        pady=8,
-        command=salvar
+            frame_botoes_edicao,
+            text="Salvar alterações",
+            font=("Arial", 9, "bold"),
+            bg="#e8f5ee",
+            fg="#198754",
+            activebackground="#d8f0e2",
+            activeforeground="#146c43",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=20,
+            pady=8,
+            command=salvar
         )
 
         botao_cancelar = tk.Button(
-        frame_botoes_edicao,
-        text="Cancelar",
-        font=("Arial", 9, "bold"),
-        bg="#f5f5f5",
-        fg="#555555",
-        activebackground="#e9e9e9",
-        activeforeground="#333333",
-        relief="flat",
-        borderwidth=0,
-        cursor="hand2",
-        padx=20,
-        pady=8,
-        command=janela_edicao.destroy
+            frame_botoes_edicao,
+            text="Cancelar",
+            font=("Arial", 9, "bold"),
+            bg="#f5f5f5",
+            fg="#555555",
+            activebackground="#e9e9e9",
+            activeforeground="#333333",
+            relief="flat",
+            borderwidth=0,
+            cursor="hand2",
+            padx=20,
+            pady=8,
+            command=janela_edicao.destroy
         )
 
         botao_cancelar.pack(
-        side="right",
-        padx=5
+            side="right",
+            padx=5
         )
 
         botao_salvar.pack(
-        side="left",
-        padx=5
+            side="left",
+            padx=5
         )
 
         janela_edicao.bind(
