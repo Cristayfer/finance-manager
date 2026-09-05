@@ -9,6 +9,8 @@ from banco import (
     buscar_movimentacoes,
     resumo_financeiro
 )
+from openpyxl import Workbook
+from tkinter import filedialog
 
 janela_cadastro = None
 
@@ -214,6 +216,57 @@ def iniciar_interface():
         padx=20,
         pady=(3, 0)
     )
+
+    def exportar_excel():
+            movimentacoes = listar_movimentacoes()
+    
+            if not movimentacoes:
+                messagebox.showinfo(
+                    "Exportar Excel",
+                    "Não existem movimentações para exportar.",
+                    parent=janela
+                )
+                return
+    
+            caminho = filedialog.asksaveasfilename(
+                parent=janela,
+                title="Salvar relatório",
+                defaultextension=".xlsx",
+                filetypes=[
+                    ("Arquivo Excel", ".xlsx")
+                ]
+            )
+    
+            if not caminho:
+                return
+    
+            arquivo = Workbook()
+            planilha = arquivo.active
+            planilha.title = "Movimentações"
+    
+            planilha.append([ 
+                "Data",
+                "Tipo",
+                "Descrição",
+                "Valor"
+            ])
+    
+            for id_mov, tipo, descricao, valor, data in movimentacoes:
+                planilha.append([
+                    data,
+                    tipo.capitalize(),
+                    descricao,
+                    valor
+                ])
+    
+            arquivo.save(caminho)
+    
+            messagebox.showinfo(
+                "Exportação concluída",
+                "As movimentações foram exportadas com sucesso.",
+                parent=janela
+            )
+    
 
     def atualizar_interface():
         total_entradas, total_despesas, saldo = calcular_saldo()
@@ -825,6 +878,27 @@ def iniciar_interface():
         text="Movimentações",
         font=("Arial", 18, "bold")
     ).pack(pady=(10, 5))
+
+    botao_exportar = tk.Button(
+        frame_botoes,
+        text="Exportar Excel",
+        font=("Arial", 9, "bold"),
+        bg="#f5f5f5",
+        fg="#555555",
+        activebackground="#e9e9e9",
+        activeforeground="#333333",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=20,
+        pady=8,
+        command=exportar_excel
+    )
+
+    botao_exportar.pack(
+        side="left",
+        padx=5
+    )
 
 
     frame_pesquisa = tk.Frame(
