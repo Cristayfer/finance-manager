@@ -10,6 +10,7 @@ from banco import (
     resumo_financeiro
 )
 from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
 from tkinter import filedialog
 
 janela_cadastro = None
@@ -243,6 +244,100 @@ def iniciar_interface():
             arquivo = Workbook()
             planilha = arquivo.active
             planilha.title = "Movimentações"
+
+            planilha.merge_cells("A1:D1")
+
+            planilha["A1"] = "CONTROLE FINANCEIRO"
+            planilha["A1"].font = Font(
+                size=16,
+                bold=True
+            )
+
+            planilha["A1"].alignment = Alignment(
+                horizontal="center"
+            )
+
+            total_entradas, total_despesas, saldo = calcular_saldo()
+
+            planilha["A3"] = "Total de entradas"
+            planilha["B3"] = float(total_entradas)
+
+            planilha["A4"] = "Total de despesas"
+            planilha["B4"] = float(total_despesas)
+
+            planilha["A5"] = "Saldo Atual"
+            planilha["B5"] = float(saldo)
+
+            planilha["B3"].number_format = 'R$ #,##0.00'
+            planilha["B4"].number_format = 'R$ #,##0.00'
+            planilha["B5"].number_format = 'R$ #,##0.00'
+
+
+            planilha["A7"] = "Data"
+            planilha["B7"] = "Tipo"
+            planilha["C7"] = "Descrição"
+            planilha["D7"] = "Valor"
+
+            for celula in planilha[7]:
+                celula.font = Font(
+                    bold=True
+                )
+
+                celula.alignment = Alignment(
+                     horizontal="center"
+                )
+
+            linha = 8
+
+            for id_mov, tipo, descricao, valor, data in movimentacoes:
+                planilha.cell(
+                    row=linha,
+                    column=1,
+                    value=data
+                )
+
+                planilha.cell(
+                    row=linha,
+                    column=2,
+                    value=tipo.capitalize()
+                )
+
+                planilha.cell(
+                    row=linha,
+                    column=3,
+                    value=descricao
+                )
+
+                planilha.cell(
+                    row=linha,
+                    column=4,
+                    value=float(valor)
+                )
+
+                planilha.cell(
+                    row=linha,
+                    column=4
+                ).number_format = 'R$ #,##0.00'
+
+                linha = 1
+
+
+            planilha.column_dimensions["A"].width = 15
+            planilha.column_dimensions["B"].width = 15
+            planilha.column_dimensions["C"].width = 35
+            planilha.column_dimensions["D"].width = 18
+
+            planilha.auto_filter.ref = f"A7:D{linha - 1}"
+
+            planilha.freeze_panes = "A8"
+
+            arquivo.save(caminho)
+
+            messagebox.showinfo(
+                "Exportação concluída",
+                "As movimentações foram exportadas com sucesso!",
+                parent=janela
+            )
     
             planilha.append([ 
                 "Data",
