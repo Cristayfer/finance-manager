@@ -1005,6 +1005,7 @@ def iniciar_interface():
         pady=(0, 10)
     )
 
+    placeholder_busca = "Buscar movimentação..."
 
     campo_busca = tk.Entry(
         frame_pesquisa,
@@ -1016,41 +1017,46 @@ def iniciar_interface():
         insertbackground="#333333"
     )
 
-    campo_busca.insert(0, "Buscar descrição...")
+    campo_busca.insert(0, placeholder_busca)
 
     def entrar_busca(event):
-        if campo_busca.get() == "Buscar descrição...":
+        if campo_busca.get() == placeholder_busca:
             campo_busca.delete(0, tk.END)
             campo_busca.config(fg="#333333")
 
+
     def sair_busca(event):
-        if campo_busca.get() == "":
-            campo_busca.insert(0, "Buscar descrição...")
+        if campo_busca.get().strip() == "":
+            campo_busca.insert(0, placeholder_busca)
             campo_busca.config(fg="#999999")
+
 
     campo_busca.bind("<FocusIn>", entrar_busca)
     campo_busca.bind("<FocusOut>", sair_busca)
+
 
     campo_busca.pack(
         side="left",
         ipady=6
     )
 
+
     def limpar_busca():
         campo_busca.delete(0, tk.END)
 
         campo_busca.insert(
             0,
-            "Buscar descrição..."
+            placeholder_busca
         )
 
         campo_busca.config(
             fg="#999999"
         )
 
-        campo_busca.focus()
-
         carregar_movimentacoes()
+
+        janela.focus_set()
+
 
     botao_limpar = tk.Button(
         frame_pesquisa,
@@ -1074,16 +1080,37 @@ def iniciar_interface():
     )
 
 
+    frame_resultados = tk.Frame(
+        janela,
+        bg="#f4f4f4"
+    )
+
+    frame_resultados.pack(
+        pady=(0, 8)
+    )
+
+    label_resultados = tk.Label(
+        frame_resultados,
+        text="",
+        font=("Arial", 9),
+        bg="#f4f4f4",
+        fg="#777777"
+    )
+
+    label_resultados.pack()
+
     def pesquisar(event=None):
+
         termo = campo_busca.get().strip()
 
-        if termo == "":
+        if termo == "" or termo == placeholder_busca:
             carregar_movimentacoes()
             return
 
         movimentacoes = buscar_movimentacoes(termo)
 
         carregar_movimentacoes(movimentacoes)
+
 
     campo_busca.bind("<Return>", pesquisar)
 
@@ -1095,8 +1122,7 @@ def iniciar_interface():
     frame_movimentacoes.pack(
         fill="x",
         padx=20
-)
-
+    )   
 
     def carregar_movimentacoes(movimentacoes=None):
         for widget in frame_movimentacoes.winfo_children():
@@ -1104,6 +1130,23 @@ def iniciar_interface():
 
         if movimentacoes is None:
             movimentacoes = listar_movimentacoes()
+
+        quantidade = len(movimentacoes)
+
+        if quantidade == 0:
+            label_resultados.config(
+                text="Nenhuma movimentação encontrada"
+            )
+
+        elif quantidade == 1:
+            label_resultados.config(
+                text="1 movimentação encontrada"
+            )
+
+        else:
+            label_resultados.config(
+                text=f"{quantidade} movimentações encontradas"
+            )
 
 
         largura_data = 120
