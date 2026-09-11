@@ -1,10 +1,13 @@
 import sqlite3
 from datetime import datetime
+import os
 
+PASTA_DATA = "data"
+CAMINHO_BANCO = os.path.join(PASTA_DATA, "financeiro.db")
 
 def conectar():
-    conexao = sqlite3.connect("financeiro.db")
-    return conexao
+    os.makedirs(PASTA_DATA, exist_ok=True)
+    return sqlite3.connect(CAMINHO_BANCO)
 
 
 def criar_tabela():

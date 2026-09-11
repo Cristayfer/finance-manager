@@ -1219,6 +1219,17 @@ def iniciar_interface():
                 pady=(0, 8)
             )
 
+        def adicionar_hover(botao, cor_normal, cor_hover):
+            botao.bind(
+                "<Enter>",
+                lambda event: botao.config(bg=cor_hover)
+            )
+
+            botao.bind(
+                "<Leave>",
+                lambda event: botao.config(bg=cor_normal)
+            )
+
         for linha, movimentacao in enumerate(
             movimentacoes,
             start=1
@@ -1305,10 +1316,11 @@ def iniciar_interface():
 
             frame_acoes = tk.Frame(
                 tabela,
-                bg="white",
+                bg="#fafafa",
                 highlightbackground="#dddddd",
                 highlightthickness=1
             )
+            
 
             frame_acoes.grid(
                 row=linha,
@@ -1344,19 +1356,10 @@ def iniciar_interface():
                 padx=5,
                 pady=5
             )
-
-            botao_editar.bind(
-                "<Enter>",
-                lambda event: botao_editar.config(
-                    bg="#e9e9e9"
-                )
-            )
-
-            botao_editar.bind(
-                "<Leave>",
-                lambda event: botao_editar.config(
-                    bg="#f5f5f5"
-                )
+            adicionar_hover(
+                botao_editar,
+                "#f5f5f5",
+                "#e9e9e9"
             )
 
             botao_excluir = tk.Button(
@@ -1379,19 +1382,12 @@ def iniciar_interface():
                 pady=5
             )
 
-            botao_excluir.bind(
-                "<Enter>",
-                lambda event: botao_excluir.config(
-                    bg="#e9e9e9"
-                )
+            adicionar_hover(
+                botao_excluir,
+                "#f5f5f5",
+                "#e9e9e9"
             )
 
-            botao_excluir.bind(
-                "<Leave>",
-                lambda event: botao_excluir.config(
-                    bg="#f5f5f5"
-                )
-            )
 
     def excluir(id_movimentacao):
         janela_exclusao = tk.Toplevel(janela)
