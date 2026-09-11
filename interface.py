@@ -1125,6 +1125,8 @@ def iniciar_interface():
     )   
 
     def carregar_movimentacoes(movimentacoes=None):
+        termo = campo_busca.get().strip()
+        
         for widget in frame_movimentacoes.winfo_children():
             widget.destroy()
 
@@ -1134,19 +1136,34 @@ def iniciar_interface():
         quantidade = len(movimentacoes)
 
         if quantidade == 0:
-            label_resultados.config(
-                text="Nenhuma movimentação encontrada"
-            )
+            if termo and termo != placeholder_busca:
+                label_resultados.config(
+                    text=f'Nenhuma movimentação encontrada para "{termo}"'
+                )
+            else:
+                label_resultados.config(
+                    text="Nenhuma movimentação encontrada"
+                )
 
         elif quantidade == 1:
-            label_resultados.config(
-                text="1 movimentação encontrada"
-            )
+            if termo and termo != placeholder_busca:
+                label_resultados.config(
+                    text=f'1 movimentação encontrada para "{termo}"'
+                )
+            else:
+                label_resultados.config(
+                    text="1 movimentação encontrada"
+                )
 
         else:
-            label_resultados.config(
-                text=f"{quantidade} movimentações encontradas"
-            )
+            if termo and termo != placeholder_busca:
+                label_resultados.config(
+                    text=f'{quantidade} movimentações encontradas para "{termo}"'
+                )
+            else:
+                label_resultados.config(
+                    text=f"{quantidade} movimentações encontradas"
+                )
 
 
         largura_data = 120
@@ -1300,7 +1317,7 @@ def iniciar_interface():
                 pady=3
             )
 
-            tk.Button(
+            botao_editar = tk.Button(
                 frame_acoes,
                 text="Editar",
                 font=("Arial", 8, "bold"),
@@ -1321,13 +1338,28 @@ def iniciar_interface():
                                     descricao,
                                     valor
                                 )
-            ).pack(
+            )
+            botao_editar.pack(
                 side="left",
                 padx=5,
                 pady=5
             )
 
-            tk.Button(
+            botao_editar.bind(
+                "<Enter>",
+                lambda event: botao_editar.config(
+                    bg="#e9e9e9"
+                )
+            )
+
+            botao_editar.bind(
+                "<Leave>",
+                lambda event: botao_editar.config(
+                    bg="#f5f5f5"
+                )
+            )
+
+            botao_excluir = tk.Button(
                 frame_acoes,
                 text="Excluir",
                 font=("Arial", 8, "bold"),
@@ -1340,10 +1372,25 @@ def iniciar_interface():
                 borderwidth=0,
                 cursor="hand2",
                 command=lambda id_mov=id_mov: excluir(id_mov)
-            ).pack(
+            )
+            botao_excluir.pack(
                 side="left",
                 padx=2,
                 pady=5
+            )
+
+            botao_excluir.bind(
+                "<Enter>",
+                lambda event: botao_excluir.config(
+                    bg="#e9e9e9"
+                )
+            )
+
+            botao_excluir.bind(
+                "<Leave>",
+                lambda event: botao_excluir.config(
+                    bg="#f5f5f5"
+                )
             )
 
     def excluir(id_movimentacao):

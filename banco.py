@@ -64,6 +64,7 @@ def listar_movimentacoes():
     cursor.execute("""
         SELECT id, tipo, descricao, valor, data
         FROM movimentacoes
+        ORDER BY id DESC    
     """)
 
     movimentacoes = cursor.fetchall()
