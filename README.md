@@ -26,5 +26,4 @@ Um projeto simples de controle financeiro desenvolvido em python e sqlite.
 ## 📅 Próximas implementações
 
 - Criar categorias
-- Criar relatórios financeiros
 - Possível versão web
