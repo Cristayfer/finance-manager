@@ -22,8 +22,8 @@ Um projeto simples de controle financeiro desenvolvido em python e sqlite.
 - Filtrar movimentações
 - Interface moderna
 - Exportação em excel
+- Criar categorias
 
 ## 📅 Próximas implementações
 
-- Criar categorias
 - Possível versão web
