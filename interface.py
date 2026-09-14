@@ -15,19 +15,99 @@ from openpyxl.styles import Font, Alignment
 
 janela_cadastro = None
 
+
+def criar_seletor_categoria(parent, categorias, valor_inicial="Outros"):
+
+    frame_categoria = tk.Frame(
+        parent,
+        bg="white"
+    )
+
+    campo_categoria = tk.Entry(
+        frame_categoria,
+        font=("Arial", 10),
+        relief="flat",
+        bg="white",
+        fg="#333333",
+        insertbackground="#333333",
+        readonlybackground="white"
+    )
+
+    campo_categoria.insert(0, valor_inicial)
+    campo_categoria.config(state="readonly")
+
+    campo_categoria.pack(
+        side="left",
+        fill="both",
+        expand=True,
+        ipady=8
+    )
+
+    def selecionar_categoria(categoria):
+        campo_categoria.config(state="normal")
+        campo_categoria.delete(0, "end")
+        campo_categoria.insert(0, categoria)
+        campo_categoria.config(state="readonly")
+
+    menu = tk.Menu(
+        parent,
+        tearoff=0,
+        font=("Arial", 10),
+        bg="white",
+        fg="#333333",
+        activebackground="#eeeeee",
+        activeforeground="#333333",
+        borderwidth=0
+    )
+
+    for categoria in categorias:
+        menu.add_command(
+            label=categoria,
+            command=lambda c=categoria: selecionar_categoria(c)
+        )
+
+    def abrir_menu(event=None):
+
+        x = frame_categoria.winfo_rootx()
+        y = frame_categoria.winfo_rooty() + frame_categoria.winfo_height()
+
+        menu.post(x, y)
+
+    campo_categoria.bind(
+        "<Button-1>",
+        abrir_menu
+    )
+
+    botao_seta = tk.Button(
+        frame_categoria,
+        text="▼",
+        font=("Arial", 8),
+        bg="white",
+        fg="#555555",
+        activebackground="white",
+        activeforeground="#333333",
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        command=abrir_menu
+    )
+
+    botao_seta.pack(
+        side="right",
+        padx=(0, 8)
+    )
+
+    frame_categoria.pack(
+        fill="x",
+        ipady=0
+    )
+
+    return campo_categoria
+
+
 def iniciar_interface():
 
-
     janela = tk.Tk()
-
-    estilo = ttk.Style()
-    estilo.configure(
-        "Categoria.TCombobox",
-        Font=("Arial", 10),
-        fieldbackground="white",
-        foreground="#333333",
-        padding=6
-    )
 
     janela.title("Controle financeiro")
     janela.geometry("1200x800")
@@ -570,19 +650,10 @@ def iniciar_interface():
             "Outros"
         ]
 
-        campo_categoria = ttk.Combobox(
+        campo_categoria = criar_seletor_categoria(
             frame_categoria,
-            values=categorias,
-            state="readonly",
-            font="Categoria.TCombobox"
+            categorias
         )
-
-        campo_categoria.pack(
-            fill="x",
-            ipady=6
-        )
-
-        campo_categoria.set("Outros")
 
         frame_valor = tk.Frame(
             janela_cadastro,
@@ -858,19 +929,10 @@ def iniciar_interface():
             "Outros"
         ]
 
-        campo_categoria = ttk.Combobox(
+        campo_categoria = criar_seletor_categoria(
             frame_categoria,
-            values=categorias,
-            state="readonly",
-            font="Categoria.TCombobox"
+            categorias
         )
-
-        campo_categoria.pack(
-            fill="x",
-            ipady=6
-        )
-
-        campo_categoria.set("Outros")
 
         frame_valor = tk.Frame(
             janela_cadastro,
@@ -1744,19 +1806,11 @@ def iniciar_interface():
             "Outros"
         ]
 
-        campo_categoria = ttk.Combobox(
+        campo_categoria = criar_seletor_categoria(
             frame_categoria,
-            values=categorias,
-            state="readonly",
-            font="Categoria.TCombobox"
+            categorias,
+            categoria
         )
-
-        campo_categoria.pack(
-            fill="x",
-            ipady=6
-        )
-
-        campo_categoria.set(categoria)
 
         frame_valor = tk.Frame(
             janela_edicao,
