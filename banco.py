@@ -45,6 +45,24 @@ def adicionar_coluna_data():
     conexao.commit()
     conexao.close()
 
+def adicionar_coluna_categoria():
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("PRAGMA table_info(movimentacoes)")
+    colunas = cursor.fetchall()
+
+    nomes_colunas = [coluna[1] for coluna in colunas]
+
+    if "categoria" not in nomes_colunas:
+        cursor.execute("""
+            ALTER TABLE movimentacoes
+            ADD COLUMN categoria TEXT DEFAULT 'Outros'
+        """)
+
+    conexao.commit()
+    conexao.close()
+
 
 def inserir_movimentacao(tipo, descricao, valor):
     conexao = conectar()
@@ -65,7 +83,7 @@ def listar_movimentacoes():
     cursor = conexao.cursor()
 
     cursor.execute("""
-        SELECT id, tipo, descricao, valor, data
+        SELECT id, tipo, descricao, valor, data, categoria
         FROM movimentacoes
         ORDER BY id DESC    
     """)
@@ -234,3 +252,7 @@ def calcular_saldo_periodo(data_inicial, data_final):
     saldo = total_entradas - total_despesas
 
     return total_entradas, total_despesas, saldo
+
+criar_tabela()
+adicionar_coluna_data()
+adicionar_coluna_categoria()

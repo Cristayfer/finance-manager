@@ -1168,6 +1168,7 @@ def iniciar_interface():
 
         largura_data = 120
         largura_tipo = 100
+        largura_categoria = 140
         largura_descricao = 220
         largura_valor = 120
         largura_acoes = 180
@@ -1175,6 +1176,7 @@ def iniciar_interface():
         larguras = [
             largura_data,
             largura_tipo,
+            largura_categoria,
             largura_descricao,
             largura_valor,
             largura_acoes
@@ -1199,6 +1201,7 @@ def iniciar_interface():
         cabecalhos = [
             "DATA",
             "TIPO",
+            "CATEGORIA",
             "DESCRIÇÃO",
             "VALOR",
             "AÇÕES"
@@ -1235,7 +1238,7 @@ def iniciar_interface():
             start=1
         ):
 
-            id_mov, tipo, descricao, valor, data = movimentacao
+            id_mov, tipo, descricao, valor, data, categoria = movimentacao
 
             tk.Label(
                 tabela,
@@ -1277,6 +1280,24 @@ def iniciar_interface():
                 ipady=7
             )
 
+            tk.Label(
+                tabela,
+                text=categoria,
+                font=("Arial", 9),
+                bg="white",
+                fg="#555555",
+                anchor="w",
+                highlightbackground="#dddddd",
+                highlightthickness=1
+            ).grid(
+                row=linha,
+                column=2,
+                sticky="nsew",
+                padx=(0, 1),
+                pady=3,
+                ipady=7
+            )
+
 
             tk.Label(
                 tabela,
@@ -1289,7 +1310,7 @@ def iniciar_interface():
                 highlightthickness=1
             ).grid(
                 row=linha,
-                column=2,
+                column=3,
                 sticky="nsew",
                 padx=(0, 1),
                 pady=3,
@@ -1307,7 +1328,7 @@ def iniciar_interface():
                 highlightthickness=1
             ).grid(
                 row=linha,
-                column=3,
+                column=4,
                 sticky="nsew",
                 padx=(0, 1),
                 pady=3,
@@ -1324,7 +1345,7 @@ def iniciar_interface():
 
             frame_acoes.grid(
                 row=linha,
-                column=4,
+                column=5,
                 sticky="nsew",
                 pady=3
             )
