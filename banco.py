@@ -64,16 +64,16 @@ def adicionar_coluna_categoria():
     conexao.close()
 
 
-def inserir_movimentacao(tipo, descricao, valor):
+def inserir_movimentacao(tipo, descricao, valor, categoria):
     conexao = conectar()
     cursor = conexao.cursor()
 
     data = datetime.now().strftime("%d/%m/%Y")
 
     cursor.execute("""
-        INSERT INTO movimentacoes (tipo, descricao, valor, data)
-        VALUES (?, ?, ?, ?)
-    """, (tipo, descricao, valor, data))
+        INSERT INTO movimentacoes (tipo, descricao, valor, data, categoria)
+        VALUES (?, ?, ?, ?, ?)
+    """, (tipo, descricao, valor, data, categoria))
 
     conexao.commit()
     conexao.close()
@@ -114,15 +114,15 @@ def excluir_movimentacao(id_movimentacao):
 
     return excluida
 
-def editar_movimentacao(id_movimentacao, tipo, descricao, valor):
+def editar_movimentacao(id_movimentacao, tipo, descricao, valor, categoria):
     conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("""
         UPDATE movimentacoes
-        SET tipo = ?, descricao = ?, valor = ?
+        SET tipo = ?, descricao = ?, valor = ?, categoria = ?
         WHERE id = ?
-    """, (tipo, descricao, valor, id_movimentacao))
+    """, (tipo, descricao, valor, categoria, id_movimentacao))
 
     conexao.commit()
     conexao.close()

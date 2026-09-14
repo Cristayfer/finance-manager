@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk, filedialog
 from banco import (
     calcular_saldo, 
     inserir_movimentacao, 
@@ -11,7 +11,7 @@ from banco import (
 )
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
-from tkinter import filedialog
+
 
 janela_cadastro = None
 
@@ -19,6 +19,15 @@ def iniciar_interface():
 
 
     janela = tk.Tk()
+
+    estilo = ttk.Style()
+    estilo.configure(
+        "Categoria.TCombobox",
+        Font=("Arial", 10),
+        fieldbackground="white",
+        foreground="#333333",
+        padding=6
+    )
 
     janela.title("Controle financeiro")
     janela.geometry("1200x800")
@@ -436,7 +445,7 @@ def iniciar_interface():
         
         janela_cadastro = tk.Toplevel(janela)
         janela_cadastro.title("Nova entrada")
-        janela_cadastro.geometry("426x400")
+        janela_cadastro.geometry("426x450")
         janela_cadastro.resizable(False, False)
         janela_cadastro.configure(bg="#f4f4f4")
 
@@ -524,6 +533,57 @@ def iniciar_interface():
             ipady=8
         )
 
+        frame_categoria = tk.Frame(
+            janela_cadastro,
+            bg="#f4f4f4"
+        )
+
+        frame_categoria.pack(
+            fill="x",
+            padx=30,
+            pady=10
+        )
+
+        tk.Label(
+            frame_categoria,
+            text="CATEGORIA",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
+
+        categorias = [
+            "Salário",
+            "Freelance",
+            "Investimento",
+            "Alimentação",
+            "Transporte",
+            "Moradia",
+            "Lazer",
+            "Saúde",
+            "Educação",
+            "Compras",
+            "Contas",
+            "Outros"
+        ]
+
+        campo_categoria = ttk.Combobox(
+            frame_categoria,
+            values=categorias,
+            state="readonly",
+            font="Categoria.TCombobox"
+        )
+
+        campo_categoria.pack(
+            fill="x",
+            ipady=6
+        )
+
+        campo_categoria.set("Outros")
+
         frame_valor = tk.Frame(
             janela_cadastro,
             bg="#f4f4f4"
@@ -563,6 +623,7 @@ def iniciar_interface():
         def cadastrar():
             descricao = campo_descricao.get().strip()
             valor = campo_valor.get().strip()
+            categoria = campo_categoria.get().strip()
 
             if descricao == "":
                 messagebox.showwarning(
@@ -607,7 +668,8 @@ def iniciar_interface():
             inserir_movimentacao(
                 "entrada",
                 descricao,
-                valor
+                valor,
+                categoria
             )
 
             atualizar_interface()
@@ -676,7 +738,7 @@ def iniciar_interface():
         
         janela_cadastro = tk.Toplevel(janela)
         janela_cadastro.title("Nova despesa")
-        janela_cadastro.geometry("420x400")
+        janela_cadastro.geometry("420x450")
         janela_cadastro.resizable(False, False)
         janela_cadastro.configure(bg="#f4f4f4")
 
@@ -759,6 +821,57 @@ def iniciar_interface():
             ipady=8
         )
 
+        frame_categoria = tk.Frame(
+            janela_cadastro,
+            bg="#f4f4f4"
+        )
+
+        frame_categoria.pack(
+            fill="x",
+            padx=30,
+            pady=10
+        )
+
+        tk.Label(
+            frame_categoria,
+            text="CATEGORIA",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
+
+        categorias = [
+            "Salário",
+            "Freelance",
+            "Investimento",
+            "Alimentação",
+            "Transporte",
+            "Moradia",
+            "Lazer",
+            "Saúde",
+            "Educação",
+            "Compras",
+            "Contas",
+            "Outros"
+        ]
+
+        campo_categoria = ttk.Combobox(
+            frame_categoria,
+            values=categorias,
+            state="readonly",
+            font="Categoria.TCombobox"
+        )
+
+        campo_categoria.pack(
+            fill="x",
+            ipady=6
+        )
+
+        campo_categoria.set("Outros")
+
         frame_valor = tk.Frame(
             janela_cadastro,
             bg="#f4f4f4"
@@ -798,6 +911,7 @@ def iniciar_interface():
         def cadastrar():
             descricao = campo_descricao.get().strip()
             valor = campo_valor.get().strip()
+            categoria = campo_categoria.get().strip()
 
             if descricao == "":
                 messagebox.showwarning(
@@ -842,7 +956,8 @@ def iniciar_interface():
             inserir_movimentacao(
                 "despesa",
                 descricao,
-                valor
+                valor,
+                categoria
             )
 
             atualizar_interface()
@@ -1365,11 +1480,13 @@ def iniciar_interface():
                 command=lambda id_mov=id_mov,
                                 tipo=tipo,
                                 descricao=descricao,
-                                valor=valor:editar_janela(
+                                valor=valor,
+                                categoria=categoria:editar_janela(
                                     id_mov,
                                     tipo,
                                     descricao,
-                                    valor
+                                    valor,
+                                    categoria
                                 )
             )
             botao_editar.pack(
@@ -1504,11 +1621,11 @@ def iniciar_interface():
         )
 
 
-    def editar_janela(id_mov, tipo, descricao, valor):
+    def editar_janela(id_mov, tipo, descricao, valor, categoria):
 
         janela_edicao = tk.Toplevel(janela)
         janela_edicao.title("Editar movimentação")
-        janela_edicao.geometry("420x400")
+        janela_edicao.geometry("420x450")
         janela_edicao.resizable(False, False)
         janela_edicao.configure(bg="#f4f4f4")
 
@@ -1590,6 +1707,57 @@ def iniciar_interface():
             descricao
         )
 
+        frame_categoria = tk.Frame(
+            janela_edicao,
+            bg="#f4f4f4"
+        )
+
+        frame_categoria.pack(
+            fill="x",
+            padx=30,
+            pady=10
+        )
+
+        tk.Label(
+            frame_categoria,
+            text="CATEGORIA",
+            font=("Arial", 9, "bold"),
+            bg="#f4f4f4",
+            fg="#555555"
+        ).pack(
+            anchor="w",
+            pady=(0, 5)
+        )
+
+        categorias = [
+            "Salário",
+            "Freelance",
+            "Investimento",
+            "Alimentação",
+            "Transporte",
+            "Moradia",
+            "Lazer",
+            "Saúde",
+            "Educação",
+            "Compras",
+            "Contas",
+            "Outros"
+        ]
+
+        campo_categoria = ttk.Combobox(
+            frame_categoria,
+            values=categorias,
+            state="readonly",
+            font="Categoria.TCombobox"
+        )
+
+        campo_categoria.pack(
+            fill="x",
+            ipady=6
+        )
+
+        campo_categoria.set(categoria)
+
         frame_valor = tk.Frame(
             janela_edicao,
             bg="#f4f4f4"
@@ -1635,6 +1803,7 @@ def iniciar_interface():
 
             nova_descricao = campo_descricao.get().strip()
             novo_valor = campo_valor.get().strip()
+            nova_categoria = campo_categoria.get().strip()
 
             if nova_descricao == "":
                 messagebox.showwarning(
@@ -1681,7 +1850,8 @@ def iniciar_interface():
                 id_mov,
                 tipo,
                 nova_descricao,
-                novo_valor
+                novo_valor,
+                nova_categoria
             )
 
             janela_edicao.destroy()
