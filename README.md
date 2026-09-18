@@ -27,3 +27,5 @@ Um projeto simples de controle financeiro desenvolvido em python e sqlite.
 ## 📅 Próximas implementações
 
 - Possível versão web
+- Aba com resumo de movimentações detalhada
+- Ajuda para organização de gastos
