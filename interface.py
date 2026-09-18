@@ -1293,18 +1293,76 @@ def iniciar_interface():
 
     frame_movimentacoes = tk.Frame(
         janela,
-        bg="#f4f4f4"
+        bg="#f4f4f4",
+        height=300
     )
 
     frame_movimentacoes.pack(
         fill="x",
         padx=20
-    )   
+    )
+
+    frame_movimentacoes.pack_propagate(False)
+
+
+    canvas_movimentacoes = tk.Canvas(
+        frame_movimentacoes,
+        bg="#f4f4f4",
+        highlightthickness=0
+    )
+
+    canvas_movimentacoes.pack(
+        side="left",
+        fill="both",
+        expand=True
+    )
+
+
+    barra_rolagem = tk.Scrollbar(
+        frame_movimentacoes,
+        orient="vertical",
+        command=canvas_movimentacoes.yview
+    )
+
+    barra_rolagem.pack(
+        side="right",
+        fill="y"
+    )
+
+
+    canvas_movimentacoes.configure(
+        yscrollcommand=barra_rolagem.set
+    )
+
+
+    tabela_movimentacoes = tk.Frame(
+        canvas_movimentacoes,
+        bg="#f4f4f4"
+    )
+
+
+    canvas_movimentacoes.create_window(
+        (0, 0),
+        window=tabela_movimentacoes,
+        anchor="nw"
+    )
+
+
+    def atualizar_scroll(event=None):
+        canvas_movimentacoes.configure(
+            scrollregion=canvas_movimentacoes.bbox("all")
+        )
+
+
+    tabela_movimentacoes.bind(
+        "<Configure>",
+        atualizar_scroll
+    )  
 
     def carregar_movimentacoes(movimentacoes=None):
         termo = campo_busca.get().strip()
         
-        for widget in frame_movimentacoes.winfo_children():
+        for widget in tabela_movimentacoes.winfo_children():
             widget.destroy()
 
         if movimentacoes is None:
@@ -1361,7 +1419,7 @@ def iniciar_interface():
 
 
         tabela = tk.Frame(
-            frame_movimentacoes,
+            tabela_movimentacoes,
             bg="#f4f4f4"
         )
 
@@ -1586,6 +1644,10 @@ def iniciar_interface():
                 botao_excluir,
                 "#f5f5f5",
                 "#e9e9e9"
+            )
+
+            canvas_movimentacoes.configure(
+                scrollregion=canvas_movimentacoes.bbox("all")
             )
 
 
